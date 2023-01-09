@@ -126,7 +126,6 @@ function CoinSwapper(props) {
 
   // Determines whether the button should be enabled or not
   const isButtonEnabled = () => {
-
     // If both coins have been selected, and a valid float has been entered which is less than the user's balance, then return true
     const parsedInput1 = parseFloat(field1Value);
     const parsedInput2 = parseFloat(field2Value);
@@ -152,7 +151,14 @@ function CoinSwapper(props) {
     // We only update the values if the user provides a token
     else if (address) {
       // Getting some token data is async, so we need to wait for the data to return, hence the promise
-      getBalanceAndSymbol(props.network.account, address, props.network.provider, props.network.signer, props.network.weth.address, props.network.coins).then((data) => {
+      getBalanceAndSymbol(
+        props.network.account,
+        address,
+        props.network.provider,
+        props.network.signer,
+        props.network.weth.address,
+        props.network.coins
+      ).then((data) => {
         setCoin1({
           address: address,
           symbol: data.symbol,
@@ -174,7 +180,14 @@ function CoinSwapper(props) {
     // We only update the values if the user provides a token
     else if (address) {
       // Getting some token data is async, so we need to wait for the data to return, hence the promise
-      getBalanceAndSymbol(props.network.account, address, props.network.provider, props.network.signer, props.network.weth.address, props.network.coins).then((data) => {
+      getBalanceAndSymbol(
+        props.network.account,
+        address,
+        props.network.provider,
+        props.network.signer,
+        props.network.weth.address,
+        props.network.coins
+      ).then((data) => {
         setCoin2({
           address: address,
           symbol: data.symbol,
@@ -228,11 +241,22 @@ function CoinSwapper(props) {
     );
 
     if (coin1.address && coin2.address) {
-      getReserves(coin1.address, coin2.address, props.network.factory, props.network.signer, props.network.account).then(
-        (data) => setReserves(data)
-      );
+      getReserves(
+        coin1.address,
+        coin2.address,
+        props.network.factory,
+        props.network.signer,
+        props.network.account
+      ).then((data) => setReserves(data));
     }
-  }, [coin1.address, coin2.address, props.network.account, props.network.factory, props.network.router, props.network.signer]);
+  }, [
+    coin1.address,
+    coin2.address,
+    props.network.account,
+    props.network.factory,
+    props.network.router,
+    props.network.signer,
+  ]);
 
   // This hook is called when either of the state variables `field1Value` `coin1.address` or `coin2.address` change.
   // It attempts to calculate and set the state variable `field2Value`
@@ -242,12 +266,18 @@ function CoinSwapper(props) {
     if (isNaN(parseFloat(field1Value))) {
       setField2Value("");
     } else if (parseFloat(field1Value) && coin1.address && coin2.address) {
-      getAmountOut(coin1.address, coin2.address, field1Value, props.network.router, props.network.signer).then(
-        (amount) => setField2Value(amount.toFixed(7))
-      ).catch(e => {
-        console.log(e);
-        setField2Value("NA");
-      })
+      getAmountOut(
+        coin1.address,
+        coin2.address,
+        field1Value,
+        props.network.router,
+        props.network.signer
+      )
+        .then((amount) => setField2Value(amount.toFixed(7)))
+        .catch((e) => {
+          console.log(e);
+          setField2Value("NA");
+        });
     } else {
       setField2Value("");
     }
@@ -257,7 +287,7 @@ function CoinSwapper(props) {
   // updated has changed. This allows them to see when a transaction completes by looking at the balance output.
   useEffect(() => {
     const coinTimeout = setTimeout(() => {
-      console.log('props: ', props);
+      console.log("props: ", props);
       console.log("Checking balances...");
 
       if (coin1.address && coin2.address && props.network.account) {
@@ -270,7 +300,7 @@ function CoinSwapper(props) {
         ).then((data) => setReserves(data));
       }
 
-      if (coin1.address && props.network.account &&!wrongNetworkOpen) {
+      if (coin1.address && props.network.account && !wrongNetworkOpen) {
         getBalanceAndSymbol(
           props.network.account,
           coin1.address,
@@ -278,16 +308,14 @@ function CoinSwapper(props) {
           props.network.signer,
           props.network.weth.address,
           props.network.coins
-          ).then(
-          (data) => {
-            setCoin1({
-              ...coin1,
-              balance: data.balance,
-            });
-          }
-        );
+        ).then((data) => {
+          setCoin1({
+            ...coin1,
+            balance: data.balance,
+          });
+        });
       }
-      if (coin2.address && props.network.account &&!wrongNetworkOpen) {
+      if (coin2.address && props.network.account && !wrongNetworkOpen) {
         getBalanceAndSymbol(
           props.network.account,
           coin2.address,
@@ -295,14 +323,12 @@ function CoinSwapper(props) {
           props.network.signer,
           props.network.weth.address,
           props.network.coins
-          ).then(
-          (data) => {
-            setCoin2({
-              ...coin2,
-              balance: data.balance,
-            });
-          }
-        );
+        ).then((data) => {
+          setCoin2({
+            ...coin2,
+            balance: data.balance,
+          });
+        });
       }
     }, 10000);
 
@@ -324,9 +350,7 @@ function CoinSwapper(props) {
         coins={props.network.coins}
         signer={props.network.signer}
       />
-      <WrongNetwork
-        open={wrongNetworkOpen}
-        />
+      <WrongNetwork open={wrongNetworkOpen} />
 
       {/* Coin Swapper */}
       <Container maxWidth="xs">
@@ -416,10 +440,7 @@ function CoinSwapper(props) {
         justifyContent="center"
         alignItems="flex-end"
       >
-        <p>
-        Alternative Uniswap Interface | Get AUT for use in the bakerloo testnet{" "}
-          <a href="https://faucet.bakerloo.autonity.network/">here</a>
-        </p>
+        <p>UniswapV2 Interface</p>
       </Grid>
     </div>
   );

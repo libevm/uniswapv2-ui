@@ -241,6 +241,19 @@ const GÖRLICoins = [
   },
 ]
 
+const MantleTestnetCoins = [
+  {
+    name: 'BIT',
+    abbr: 'BIT',
+    address: ''
+  },
+  {
+    name: 'Clown',
+    abbr: 'CLOWN',
+    address: '0x0d7f7eb2efD4c97CA8883D197889B17615796871'
+  }
+]
+
 const COINS = new Map();
 COINS.set(chains.ChainId.MAINNET, MAINNETCoins);
 COINS.set(chains.ChainId.ROPSTEN, ROPSTENCoins);
@@ -251,4 +264,5 @@ COINS.set(chains.ChainId.AUTONITY, AUTONITYCoins);
 COINS.set(chains.ChainId.DEVNET, DEVNETCoins);
 COINS.set(chains.ChainId.PARASTATE, PARASTATECoins);
 COINS.set(chains.ChainId.GANCHE, GANACHECoins)
+COINS.set(chains.ChainId.MANTLE_TESTNET, MantleTestnetCoins)
 export default COINS

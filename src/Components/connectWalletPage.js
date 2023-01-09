@@ -49,7 +49,7 @@ function ConnectWalletPage() {
     <div>
       <div className="Title">
         <h1 className="navbar-logo">
-          Alternative Uniswap Interface
+          UniswapV2 UI
         </h1>
       </div>
 
@@ -60,7 +60,7 @@ function ConnectWalletPage() {
             className={classes.title}
             color="common.white"
           >
-            Please connect an Ethereum wallet to your browser to use the
+            Please connect an Ethereum wallet to your browser and select Mantle Testnet to use the
             application
           </Typography>
         </Paper>
@@ -74,8 +74,7 @@ function ConnectWalletPage() {
         alignItems="flex-end"
       >
         <p>
-          Alternative Uniswap Interface | Get AUT for use in the bakerloo testnet{" "}
-          <a href="https://faucet.bakerloo.autonity.network/">here</a>
+          UniswapV2 UI
         </p>
       </Grid>
     </div>
