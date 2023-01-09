@@ -2,7 +2,7 @@
   "name": "react-uniswap",
   "version": "0.1.0",
   "engines" : { 
-    "node" : "16.13.1"
+    "node" : "16.18.1"
   },
   "private": true,
   "dependencies": {
@@ -29,7 +29,6 @@
     "prop-types": "^15.7.2",
     "notistack": "^1.0.10"
   },
-  "homepage": "https://ben-haslam.github.io/Alternative-Uniswap-Interface/",
   "scripts": {
     "deploy": "gh-pages -d build",
     "start": "react-scripts start",
