@@ -1,5 +1,4 @@
 import React from "react";
-import "./App.css";
 import { ethers } from "ethers";
 import Web3Provider from "./network";
 import NarBar from "./NavBar/NavBar";
