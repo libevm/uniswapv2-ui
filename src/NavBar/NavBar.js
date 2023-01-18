@@ -1,32 +1,36 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { MenuItems } from "./MenuItems";
-import "./NavBar.css";
 
 class NavBar extends Component {
   state = { clicked: false };
 
   render() {
     return (
-      <nav>
-        <div className="Title">
-          <h1 className="navbar-logo">
-            UniswapV2 UI
-          </h1>
-        </div>
-
-        <div className="NavbarItems">
-          <ul className={`nav-menu`}>
-            {MenuItems.map((item, index) => {
-              return (
-                <li key={index}>
-                  <Link className={"nav-links"} to={item.url}>
-                    {item.title}
-                  </Link>
-                </li>
-              );
-            })}
-          </ul>
+      <nav class="bg-gray-800 rounded-b-3xl">
+        <div class="mx-auto max-w-7xl px-2 py-6 sm:px-6 lg:px-8">
+          <div class="relative flex h-16 items-center justify-between">
+            <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
+              <div class="flex items-center text-green-500 font-bold text-2xl">
+                UniswapV2 UI
+              </div>
+            </div>
+            <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+              {MenuItems.map((item, index) => {
+                return (
+                  <li key={index}>
+                    <Link
+                      className="text-white underline underline-offset-8 p-3 text-sm font-medium"
+                      aria-current="page"
+                      to={item.url}
+                    >
+                      {item.title}
+                    </Link>
+                  </li>
+                );
+              })}
+            </div>
+          </div>
         </div>
       </nav>
     );
