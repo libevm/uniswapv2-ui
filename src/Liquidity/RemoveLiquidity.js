@@ -1,11 +1,6 @@
-import React, { useEffect } from "react";
-import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
-import ArrowDownwardIcon from "@material-ui/icons/ArrowDownward";
+import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
-import {
-  getBalanceAndSymbol,
-  getReserves,
-} from "../ethereumFunctions";
+import { getBalanceAndSymbol, getReserves } from "../ethereumFunctions";
 import { removeLiquidity, quoteRemoveLiquidity } from "./LiquidityFunctions";
 import {
   RemoveLiquidityField1,
@@ -15,79 +10,40 @@ import CoinDialog from "../CoinSwapper/CoinDialog";
 import LoadingButton from "../Components/LoadingButton";
 import WrongNetwork from "../Components/wrongNetwork";
 
-const styles = (theme) => ({
-  paperContainer: {
-    borderRadius: theme.spacing(2),
-    padding: theme.spacing(2),
-    paddingBottom: theme.spacing(3),
-    width: "40%",
-    overflow: "wrap",
-    background: "linear-gradient(45deg, #ff0000 30%, #FF8E53 90%)",
-    color: "white",
-  },
-  fullWidth: {
-    width: "100%",
-  },
-  values: {
-    width: "50%",
-  },
-  title: {
-    textAlign: "center",
-    padding: theme.spacing(0.5),
-    marginBottom: theme.spacing(1),
-  },
-  hr: {
-    width: "100%",
-  },
-  balance: {
-    padding: theme.spacing(1),
-    overflow: "wrap",
-    textAlign: "center",
-  },
-  buttonIcon: {
-    marginRight: theme.spacing(1),
-    padding: theme.spacing(0.4),
-  },
-});
-
-const useStyles = makeStyles(styles);
-
 function LiquidityRemover(props) {
-  const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
   // Stores a record of whether their respective dialog window is open
-  const [dialog1Open, setDialog1Open] = React.useState(false);
-  const [dialog2Open, setDialog2Open] = React.useState(false);
-  const [wrongNetworkOpen, setwrongNetworkOpen] = React.useState(false);
-
+  const [dialog1Open, setDialog1Open] = useState(false);
+  const [dialog2Open, setDialog2Open] = useState(false);
+  const [wrongNetworkOpen, setwrongNetworkOpen] = useState(false);
 
   // Stores data about their respective coin
-  const [coin1, setCoin1] = React.useState({
+  const [coin1, setCoin1] = useState({
     address: undefined,
     symbol: undefined,
     balance: undefined,
   });
-  const [coin2, setCoin2] = React.useState({
+  const [coin2, setCoin2] = useState({
     address: undefined,
     symbol: undefined,
     balance: undefined,
   });
 
   // Stores the current reserves in the liquidity pool between coin1 and coin2
-  const [reserves, setReserves] = React.useState(["0.0", "0.0"]);
+  const [reserves, setReserves] = useState(["0.0", "0.0"]);
 
   // Stores the current value of their respective text box
-  const [field1Value, setField1Value] = React.useState("");
+  const [field1Value, setField1Value] = useState("");
 
   // Controls the loading button
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Stores the liquidity tokens balance of the user
-  const [liquidityTokens, setLiquidityTokens] = React.useState("");
+  const [liquidityTokens, setLiquidityTokens] = useState("");
 
   // Stores the input and output for the liquidity removal preview
-  const [tokensOut, setTokensOut] = React.useState([0, 0, 0]);
+  const [tokensOut, setTokensOut] = useState([0, 0, 0]);
 
   // Switches the top and bottom coins, this is called when users hit the swap button or select the opposite
   // token in the dialog (e.g. if coin1 is TokenA and the user selects TokenB when choosing coin2)
@@ -119,7 +75,6 @@ function LiquidityRemover(props) {
 
   // Determines whether the button should be enabled or not
   const isButtonEnabled = () => {
-
     // If both coins have been selected, and a valid float has been entered for both, which are less than the user's balances, then return true
     const parsedInput = parseFloat(field1Value);
     return (
@@ -181,7 +136,7 @@ function LiquidityRemover(props) {
         props.network.signer,
         props.network.weth.address,
         props.network.coins
-        ).then((data) => {
+      ).then((data) => {
         setCoin1({
           address: address,
           symbol: data.symbol,
@@ -203,13 +158,14 @@ function LiquidityRemover(props) {
     // We only update the values if the user provides a token
     else if (address) {
       // Getting some token data is async, so we need to wait for the data to return, hence the promise
-      getBalanceAndSymbol(props.network.account,
+      getBalanceAndSymbol(
+        props.network.account,
         address,
         props.network.provider,
         props.network.signer,
         props.network.weth.address,
         props.network.coins
-        ).then((data) => {
+      ).then((data) => {
         setCoin2({
           address: address,
           symbol: data.symbol,
@@ -233,14 +189,19 @@ function LiquidityRemover(props) {
         coin2.address,
         props.network.factory,
         props.network.signer,
-        props.network.account).then(
-        (data) => {
-          setReserves([data[0], data[1]]);
-          setLiquidityTokens(data[2]);
-        }
-      );
+        props.network.account
+      ).then((data) => {
+        setReserves([data[0], data[1]]);
+        setLiquidityTokens(data[2]);
+      });
     }
-  }, [coin1.address, coin2.address, props.network.account, props.network.factory, props.network.signer]);
+  }, [
+    coin1.address,
+    coin2.address,
+    props.network.account,
+    props.network.factory,
+    props.network.signer,
+  ]);
 
   // This hook is called when either of the state variables `field1Value`, `coin1.address` or `coin2.address` change.
   // It will give a preview of the liquidity removal.
@@ -257,7 +218,13 @@ function LiquidityRemover(props) {
         setTokensOut(data);
       });
     }
-  }, [coin1.address, coin2.address, field1Value, props.network.factory, props.network.signer]);
+  }, [
+    coin1.address,
+    coin2.address,
+    field1Value,
+    props.network.factory,
+    props.network.signer,
+  ]);
 
   useEffect(() => {
     // This hook creates a timeout that will run every ~10 seconds, it's role is to check if the user's balance has
@@ -279,37 +246,35 @@ function LiquidityRemover(props) {
         });
       }
 
-      if (coin1.address && props.network.account &&!wrongNetworkOpen) {
+      if (coin1.address && props.network.account && !wrongNetworkOpen) {
         getBalanceAndSymbol(
           props.network.account,
-          coin1.address, props.network.provider,
+          coin1.address,
+          props.network.provider,
           props.network.signer,
           props.network.weth.address,
           props.network.coins
-          ).then(
-          (data) => {
-            setCoin1({
-              ...coin1,
-              balance: data.balance,
-            });
-          }
-        );
+        ).then((data) => {
+          setCoin1({
+            ...coin1,
+            balance: data.balance,
+          });
+        });
       }
-      if (coin2.address && props.network.account &&!wrongNetworkOpen) {
-        getBalanceAndSymbol(props.network.account,
+      if (coin2.address && props.network.account && !wrongNetworkOpen) {
+        getBalanceAndSymbol(
+          props.network.account,
           coin2.address,
           props.network.provider,
           props.network.signer,
           props.network.weth.address,
           props.network.coins
-          ).then(
-          (data) => {
-            setCoin2({
-              ...coin2,
-              balance: data.balance,
-            });
-          }
-        );
+        ).then((data) => {
+          setCoin2({
+            ...coin2,
+            balance: data.balance,
+          });
+        });
       }
     }, 10000);
 
@@ -318,9 +283,6 @@ function LiquidityRemover(props) {
 
   return (
     <div>
-      {/* Coin Swapper */}
-      <Typography variant="h5" className={classes.title}></Typography>
-
       {/* Dialog Windows */}
       <CoinDialog
         open={dialog1Open}
@@ -334,145 +296,75 @@ function LiquidityRemover(props) {
         coins={props.network.coins}
         signer={props.network.signer}
       />
-      <WrongNetwork
-        open={wrongNetworkOpen}
-      />
+      <WrongNetwork open={wrongNetworkOpen} />
 
-      <Grid container direction="column" alignItems="center" spacing={2}>
-        <Grid item xs={12} className={classes.fullWidth}>
-          <RemoveLiquidityField1
-            activeField={true}
-            value={field1Value}
-            onClick={() => setDialog1Open(true)}
-            onChange={handleChange.field1}
-            symbol={coin1.symbol !== undefined ? coin1.symbol : "Select"}
-          />
-        </Grid>
+      <div className="flex-1 flex justify-start items-center flex-col w-full">
+        <div className="mt-10 w-full flex justify-center">
+          <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full gradient-border p-[2px] rounded-3xl">
+            <div className="w-full min-h-[400px] bg-gray-800 backdrop-blur-[4px] rounded-3xl shadow-card flex flex-col p-10">
+              <div className="mb-4">
+                <RemoveLiquidityField1
+                  activeField={true}
+                  value={field1Value}
+                  onClick={() => setDialog1Open(true)}
+                  onChange={handleChange.field1}
+                  symbol={coin1.symbol !== undefined ? coin1.symbol : "Select"}
+                />
+              </div>
+              <div className="mb-2 w-[100%]">
+                <RemoveLiquidityField2
+                  activeField={true}
+                  onClick={() => setDialog2Open(true)}
+                  symbol={coin2.symbol !== undefined ? coin2.symbol : "Select"}
+                />
+              </div>
 
-        <Grid item xs={12} className={classes.fullWidth}>
-          <RemoveLiquidityField2
-            activeField={true}
-            onClick={() => setDialog2Open(true)}
-            symbol={coin2.symbol !== undefined ? coin2.symbol : "Select"}
-          />
-        </Grid>
-      </Grid>
+              <div>
+                <h3 className="text-center text-white font-bold text-lg">
+                  LP-Token Balance
+                </h3>
+                <div className="flex justify-center items-center w-full mt-2 ml-2">
+                  <p className="font-poppins font-normal text-white">
+                    {formatReserve(liquidityTokens, "UNI-V2")}
+                  </p>
+                </div>
+              </div>
 
-      <Grid
-        container
-        direction="row"
-        alignItems="center"
-        justifyContent="center"
-        spacing={4}
-        className={classes.balance}
-      >
-        <hr className={classes.hr} />
-        <Grid
-          container
-          item
-          className={classes.values}
-          direction="column"
-          alignItems="center"
-          spacing={2}
-        >
-          {/* Balance Display */}
-          <Typography variant="h6">Your Balances</Typography>
-          <Grid container direction="row" justifyContent="space-between">
-            <Grid item xs={6}>
-              <Typography variant="body1" className={classes.balance}>
-                {formatBalance(coin1.balance, coin1.symbol)}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" className={classes.balance}>
-                {formatBalance(coin2.balance, coin2.symbol)}
-              </Typography>
-            </Grid>
-          </Grid>
+              <div className="relative min-w-full max-w-full gradient-border p-[2px] rounded-3xl">
+                <div className="w-full bg-gray-800 backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
+                  <div className="flex flex-col">
+                    <h6 className="font-bold text-lg text-center">Tokens In</h6>
+                    <div className="mx-auto">
+                      {formatBalance(tokensOut[0], "UNI-V2")}
+                    </div>
+                  </div>
+                  <div className="flex flex-col">
+                    <h6 className="font-bold text-lg text-center">
+                      Tokens Out
+                    </h6>
+                    <div className="mx-auto">
+                      {formatBalance(tokensOut[1], coin1.symbol)}
+                    </div>
+                    <div className="mx-auto">
+                      {formatBalance(tokensOut[2], coin2.symbol)}
+                    </div>
+                  </div>
+                </div>
+              </div>
 
-          <hr className={classes.hr} />
-
-          {/* Reserves Display */}
-          <Typography variant="h6">Reserves</Typography>
-          <Grid container direction="row" justifyContent="space-between">
-            <Grid item xs={6}>
-              <Typography variant="body1" className={classes.balance}>
-                {formatReserve(reserves[0], coin1.symbol)}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" className={classes.balance}>
-                {formatReserve(reserves[1], coin2.symbol)}
-              </Typography>
-            </Grid>
-          </Grid>
-
-          <hr className={classes.hr} />
-
-          {/* Liquidity Tokens Display */}
-          <Typography variant="h6">Your Liquidity Pool Tokens</Typography>
-          <Grid container direction="row" justifyContent="center">
-            <Grid item xs={6}>
-              <Typography variant="body1" className={classes.balance}>
-                {formatReserve(liquidityTokens, "UNI-V2")}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
-
-        <Paper className={classes.paperContainer}>
-          {/*Red  Display to show the quote */}
-          <Grid
-            container
-            item
-            direction="column"
-            alignItems="center"
-            spacing={2}
-            className={classes.fullWidth}
-          >
-            {/* Tokens in */}
-            <Typography variant="h6">Liquidity Pool Tokens in</Typography>
-            <Grid container direction="row" justifyContent="center">
-              <Grid item xs={6}>
-                <Typography variant="body1" className={classes.balance}>
-                  {formatBalance(tokensOut[0], "UNI-V2")}
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <hr className={classes.hr} />
-
-            {/* Liquidity Tokens Display */}
-            <Typography variant="h6">Tokens Out</Typography>
-            <Grid container direction="row" justifyContent="space-between">
-              <Grid item xs={6}>
-                <Typography variant="body1" className={classes.balance}>
-                  {formatBalance(tokensOut[1], coin1.symbol)}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body1" className={classes.balance}>
-                  {formatBalance(tokensOut[2], coin2.symbol)}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Paper>
-        <hr className={classes.hr} />
-      </Grid>
-
-      <Grid container direction="column" alignItems="center" spacing={2}>
-        <LoadingButton
-          loading={loading}
-          valid={isButtonEnabled()}
-          success={false}
-          fail={false}
-          onClick={remove}
-        >
-          <ArrowDownwardIcon className={classes.buttonIcon} />
-          Remove
-        </LoadingButton>
-      </Grid>
+              <LoadingButton
+                loading={loading}
+                valid={isButtonEnabled()}
+                success={false}
+                fail={false}
+                onClick={remove}
+              >
+                Remove
+              </LoadingButton>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

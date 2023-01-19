@@ -363,7 +363,9 @@ function CoinSwapper(props) {
                   loading={loading}
                   valid={isButtonEnabled()}
                   onClick={swap}
-                ></LoadingButton>
+                >
+                  Swap
+                </LoadingButton>
               </div>
             </div>
           </div>
