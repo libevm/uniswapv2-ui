@@ -1,99 +1,47 @@
-import React, { useEffect } from "react";
-import {
-  Container,
-  Grid,
-  IconButton,
-  makeStyles,
-  Paper,
-  Typography,
-} from "@material-ui/core";
-import SwapVerticalCircleIcon from "@material-ui/icons/SwapVerticalCircle";
+import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
-import LoopIcon from "@material-ui/icons/Loop";
 import {
-  getAccount,
-  getFactory,
-  getProvider,
-  getRouter,
-  getSigner,
-  getNetwork,
   getAmountOut,
   getBalanceAndSymbol,
-  getWeth,
   swapTokens,
   getReserves,
 } from "../ethereumFunctions";
 import CoinField from "./CoinField";
 import CoinDialog from "./CoinDialog";
+import Balance from "./Balance";
+import Reserve from "./Reserve";
 import LoadingButton from "../Components/LoadingButton";
 import WrongNetwork from "../Components/wrongNetwork";
-import COINS from "../constants/coins";
-import * as chains from "../constants/chains";
-
-const styles = (theme) => ({
-  paperContainer: {
-    borderRadius: theme.spacing(2),
-    padding: theme.spacing(1),
-    paddingBottom: theme.spacing(3),
-  },
-  switchButton: {
-    zIndex: 1,
-    margin: "-16px",
-    padding: theme.spacing(0.5),
-  },
-  fullWidth: {
-    width: "100%",
-  },
-  title: {
-    textAlign: "center",
-    padding: theme.spacing(0.5),
-    marginBottom: theme.spacing(1),
-  },
-  hr: {
-    width: "100%",
-  },
-  balance: {
-    padding: theme.spacing(1),
-    overflow: "wrap",
-    textAlign: "center",
-  },
-  footer: {
-    marginTop: "285px",
-  },
-});
-
-const useStyles = makeStyles(styles);
 
 function CoinSwapper(props) {
-  const classes = useStyles();
   const { enqueueSnackbar } = useSnackbar();
 
   // Stores a record of whether their respective dialog window is open
-  const [dialog1Open, setDialog1Open] = React.useState(false);
-  const [dialog2Open, setDialog2Open] = React.useState(false);
-  const [wrongNetworkOpen, setwrongNetworkOpen] = React.useState(false);
+  const [dialog1Open, setDialog1Open] = useState(false);
+  const [dialog2Open, setDialog2Open] = useState(false);
+  const [wrongNetworkOpen, setwrongNetworkOpen] = useState(false);
 
   // Stores data about their respective coin
-  const [coin1, setCoin1] = React.useState({
+  const [coin1, setCoin1] = useState({
     address: undefined,
     symbol: undefined,
     balance: undefined,
   });
-  const [coin2, setCoin2] = React.useState({
+  const [coin2, setCoin2] = useState({
     address: undefined,
     symbol: undefined,
     balance: undefined,
   });
 
   // Stores the current reserves in the liquidity pool between coin1 and coin2
-  const [reserves, setReserves] = React.useState(["0.0", "0.0"]);
+  const [reserves, setReserves] = useState(["0.0", "0.0"]);
 
   // Stores the current value of their respective text box
-  const [field1Value, setField1Value] = React.useState("");
-  const [field2Value, setField2Value] = React.useState("");
+  const [field1Value, setField1Value] = useState("");
+  const [field2Value, setField2Value] = useState("");
 
   // Controls the loading button
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Switches the top and bottom coins, this is called when users hit the swap button or select the opposite
   // token in the dialog (e.g. if coin1 is TokenA and the user selects TokenB when choosing coin2)
@@ -215,11 +163,12 @@ function CoinSwapper(props) {
 
         // If the transaction was successful, we clear to input to make sure the user doesn't accidental redo the transfer
         setField1Value("");
-        enqueueSnackbar("Transaction Successful", { variant: "success" });
+        enqueueSnackbar("Transaction Successful", { variant: "success" }); ///
       })
       .catch((e) => {
         setLoading(false);
         enqueueSnackbar("Transaction Failed (" + e.message + ")", {
+          ///
           variant: "error",
           autoHideDuration: 10000,
         });
@@ -336,112 +285,90 @@ function CoinSwapper(props) {
   });
 
   return (
-    <div>
-      {/* Dialog Windows */}
-      <CoinDialog
-        open={dialog1Open}
-        onClose={onToken1Selected}
-        coins={props.network.coins}
-        props={props.network.signer}
-      />
-      <CoinDialog
-        open={dialog2Open}
-        onClose={onToken2Selected}
-        coins={props.network.coins}
-        signer={props.network.signer}
-      />
-      <WrongNetwork open={wrongNetworkOpen} />
+    <div className="flex justify-center min-h-screen sm:px-16 px-6 bg-primary-black">
+      <div className="flex justify-between items-center flex-col max-w-[1280px] w-full">
+        {/* Dialog Windows */}
+        <CoinDialog
+          open={dialog1Open}
+          onClose={onToken1Selected}
+          coins={props.network.coins}
+          props={props.network.signer}
+        />
+        <CoinDialog
+          open={dialog2Open}
+          onClose={onToken2Selected}
+          coins={props.network.coins}
+          signer={props.network.signer}
+        />
+        <WrongNetwork open={wrongNetworkOpen} />
 
-      {/* Coin Swapper */}
-      <Container maxWidth="xs">
-        <Paper className={classes.paperContainer}>
-          <Typography variant="h5" className={classes.title}>
-            Swap Coins
-          </Typography>
+        <div className="flex-1 flex justify-start items-center flex-col w-full mt-2">
+          <div className="mt-10 w-full flex justify-center">
+            <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full gradient-border p-[2px] rounded-3xl">
+              <div className="w-full min-h-[400px] bg-gray-800 backdrop-blur-[4px] rounded-3xl shadow-card flex flex-col p-10">
+                <div className="mb-6">
+                  <CoinField
+                    activeField={true}
+                    value={field1Value}
+                    onClick={() => setDialog1Open(true)}
+                    onChange={handleChange.field1}
+                    symbol={
+                      coin1.symbol !== undefined ? coin1.symbol : "Select"
+                    }
+                  />
+                  <Balance
+                    balance={coin1.balance}
+                    symbol={coin1.symbol}
+                    format={formatBalance}
+                  />
+                </div>
 
-          <Grid container direction="column" alignItems="center" spacing={2}>
-            <Grid item xs={12} className={classes.fullWidth}>
-              <CoinField
-                activeField={true}
-                value={field1Value}
-                onClick={() => setDialog1Open(true)}
-                onChange={handleChange.field1}
-                symbol={coin1.symbol !== undefined ? coin1.symbol : "Select"}
-              />
-            </Grid>
+                <div className="mb-6 w-[100%]">
+                  <CoinField
+                    activeField={false}
+                    value={field2Value}
+                    onClick={() => setDialog2Open(true)}
+                    symbol={
+                      coin2.symbol !== undefined ? coin2.symbol : "Select"
+                    }
+                  />
+                  <Balance
+                    balance={coin2.balance}
+                    symbol={coin2.symbol}
+                    format={formatBalance}
+                  />
+                </div>
 
-            <IconButton onClick={switchFields} className={classes.switchButton}>
-              <SwapVerticalCircleIcon fontSize="medium" />
-            </IconButton>
+                <hr className="text-white"></hr>
 
-            <Grid item xs={12} className={classes.fullWidth}>
-              <CoinField
-                activeField={false}
-                value={field2Value}
-                onClick={() => setDialog2Open(true)}
-                symbol={coin2.symbol !== undefined ? coin2.symbol : "Select"}
-              />
-            </Grid>
+                <div>
+                  <h3 className="text-center text-white font-bold">Reserves</h3>
+                  <div className="flex flex-col">
+                    <Reserve
+                      reserve={reserves[0]}
+                      symbol={coin1.symbol}
+                      format={formatReserve}
+                    />
+                    <Reserve
+                      reserve={reserves[1]}
+                      symbol={coin2.symbol}
+                      format={formatReserve}
+                    />
+                  </div>
+                </div>
 
-            <hr className={classes.hr} />
+                <hr className="text-white"></hr>
 
-            {/* Balance Display */}
-            <Typography variant="h6">Your Balances</Typography>
-            <Grid container direction="row" justifyContent="space-between">
-              <Grid item xs={6}>
-                <Typography variant="body1" className={classes.balance}>
-                  {formatBalance(coin1.balance, coin1.symbol)}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body1" className={classes.balance}>
-                  {formatBalance(coin2.balance, coin2.symbol)}
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <hr className={classes.hr} />
-
-            {/* Reserves Display */}
-            <Typography variant="h6">Reserves</Typography>
-            <Grid container direction="row" justifyContent="space-between">
-              <Grid item xs={6}>
-                <Typography variant="body1" className={classes.balance}>
-                  {formatReserve(reserves[0], coin1.symbol)}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body1" className={classes.balance}>
-                  {formatReserve(reserves[1], coin2.symbol)}
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <hr className={classes.hr} />
-
-            <LoadingButton
-              loading={loading}
-              valid={isButtonEnabled()}
-              success={false}
-              fail={false}
-              onClick={swap}
-            >
-              <LoopIcon />
-              Swap
-            </LoadingButton>
-          </Grid>
-        </Paper>
-      </Container>
-
-      <Grid
-        container
-        className={classes.footer}
-        direction="row"
-        justifyContent="center"
-        alignItems="flex-end"
-      >
-        <p>UniswapV2 Interface</p>
-      </Grid>
+                <LoadingButton
+                  loading={loading}
+                  valid={isButtonEnabled()}
+                  onClick={swap}
+                ></LoadingButton>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
