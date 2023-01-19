@@ -2,7 +2,7 @@ import React from "react";
 import { CircularProgress } from "@material-ui/core";
 
 export default function LoadingButton(props) {
-  const { loading, valid, onClick } = props;
+  const { children, loading, valid, onClick } = props;
   return (
     <div className="mt-4 relative flex items-center justify-center">
       <button
@@ -14,7 +14,7 @@ export default function LoadingButton(props) {
             : "text-primary-green bg-primary-black"
         } "border-none outline-none px-16 py-2 font-poppins font-bold text-lg rounded-2xl leading-[24px] transition-all min-h-[56px]"`}
       >
-        Swap
+        {children}
       </button>
       {loading && (
         <CircularProgress
