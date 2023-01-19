@@ -1,40 +1,27 @@
 import React from "react";
-import { Button, CircularProgress, makeStyles } from "@material-ui/core";
-import green from "@material-ui/core/colors/green";
-import red from "@material-ui/core/colors/red";
-
-const useStyles = makeStyles((theme) => ({
-  wrapper: {
-    margin: 0,
-    position: "relative",
-  },
-  progress: {
-    color: green[500],
-    position: "absolute",
-    top: "50%",
-    left: "50%",
-    marginTop: -12,
-    marginLeft: -12,
-  },
-}));
+import { CircularProgress } from "@material-ui/core";
 
 export default function LoadingButton(props) {
-  const classes = useStyles();
-  const { children, loading, valid, success, fail, onClick, ...other } = props;
+  const { loading, valid, onClick } = props;
   return (
-    <div className={classes.wrapper}>
-      <Button
-        variant="contained"
-        color="primary"
-        fullWidth
+    <div className="mt-4 relative flex items-center justify-center">
+      <button
         disabled={loading || !valid}
-        type="submit"
         onClick={onClick}
-        {...other}
+        className={`${
+          valid
+            ? "bg-primary-green text-white"
+            : "text-primary-green bg-primary-black"
+        } "border-none outline-none px-16 py-2 font-poppins font-bold text-lg rounded-2xl leading-[24px] transition-all min-h-[56px]"`}
       >
-        {children}
-      </Button>
-      {loading && <CircularProgress size={24} className={classes.progress} />}
+        Swap
+      </button>
+      {loading && (
+        <CircularProgress
+          size={24}
+          className="absolute top-2/4 left-2/4 mt-[-12px] ml-[-12px]"
+        />
+      )}
     </div>
   );
 }

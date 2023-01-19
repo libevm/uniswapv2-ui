@@ -7,11 +7,11 @@ class NavBar extends Component {
 
   render() {
     return (
-      <nav class="bg-gray-800 rounded-b-3xl">
-        <div class="mx-auto max-w-7xl px-2 py-6 sm:px-6 lg:px-8">
+      <nav class="bg-primary-black">
+        <div class="mx-auto max-w-7xl p-2 sm:px-6 lg:px-8">
           <div class="relative flex h-16 items-center justify-between">
             <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-              <div class="flex items-center text-green-500 font-bold text-2xl">
+              <div class="flex items-center text-primary-green font-bold text-2xl">
                 UniswapV2 UI
               </div>
             </div>

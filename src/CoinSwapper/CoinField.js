@@ -148,42 +148,23 @@ export default function CoinField(props) {
   //      onChange - (e) => void - Called when the text field changes
   //      activeField - boolean - Whether text can be entered into this field or not
 
-  const classes = useStyles();
   const { onClick, symbol, value, onChange, activeField } = props;
 
   return (
-    <div className={classes.container}>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        className={classes.grid}
-      >
-        {/* Button */}
-        <Grid item xs={3}>
-          <Fab
-            size="small"
-            variant="extended"
-            onClick={onClick}
-            className={classes.fab}
-          >
-            {symbol}
-            <ExpandMoreIcon />
-          </Fab>
-        </Grid>
-
-        {/* Text Field */}
-        <Grid item xs={9}>
-          <InputBase
-            value={value}
-            onChange={onChange}
-            placeholder="0.0"
-            disabled={!activeField}
-            classes={{ root: classes.input, input: classes.inputBase }}
-          />
-        </Grid>
-      </Grid>
+    <div className="flex justify-between items-center flex-row w-full min-w-full bg-primary-gray border-[1px] border-transparent hover:border-secondary-gray min-h-[96px] sm:p-8 p-4 rounded-[20px]">
+      <input
+        placeholder="0.0"
+        type="number"
+        value={value}
+        disabled={!activeField}
+        onChange={onChange}
+        className="w-full flex-1 bg-transparent outline-none font-poppins font-black text-2xl text-white"
+      />
+      <div className="relative" onClick={onClick}>
+        <button className="flex flex-row items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-bold text-white border border-white">
+          {symbol}
+        </button>
+      </div>
     </div>
   );
 }
