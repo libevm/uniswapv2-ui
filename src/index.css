@@ -1,0 +1,27 @@
+@import url("https://fonts.googleapis.com/css2?family=Poppins:wght@100;200;300;400;500;600;700;800;900&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Chrome, Safari, Edge, Opera */
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+
+/* Firefox */
+input[type="number"] {
+  -moz-appearance: textfield;
+}
+
+.gradient-border {
+  background: linear-gradient(
+    168.82deg,
+    rgb(193, 255, 59) 1.7%,
+    #1f1d2b 27.12%,
+    #1f1d2b 61.28%,
+    rgb(193, 255, 59) 99.52%
+  );
+}
