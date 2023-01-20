@@ -1,7 +1,6 @@
 import React, { Component } from "react";
 import { Link } from "react-router-dom";
 import { MenuItems } from "./MenuItems";
-import { uniswapLogo } from "../assets";
 
 class NavBar extends Component {
   state = { clicked: false };
@@ -12,13 +11,8 @@ class NavBar extends Component {
         <div class="mx-auto max-w-7xl p-2 sm:px-6 lg:px-8">
           <div class="relative flex h-16 items-center justify-between">
             <div class="flex flex-1 items-center justify-center sm:items-stretch sm:justify-start">
-              <img
-                src={uniswapLogo}
-                alt="uniswap-logo"
-                className="w-16 h-16 object-contain text-primary-green"
-              />
               <div class="flex items-center text-primary-green font-bold text-2xl">
-                UniswapV2
+                Mantle Swap
               </div>
             </div>
             <div class="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">

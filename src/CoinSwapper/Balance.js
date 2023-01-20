@@ -1,5 +1,3 @@
-import React from "react";
-
 const Balance = ({ balance, symbol, format }) => {
   return (
     <div className="w-full text-left mt-2 ml-2">
