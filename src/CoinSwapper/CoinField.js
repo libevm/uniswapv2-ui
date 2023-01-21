@@ -19,7 +19,7 @@ export function RemoveLiquidityField1(props) {
 
   const { onClick, symbol, value, onChange, activeField } = props;
   return (
-    <div className="flex justify-between items-center flex-row w-full min-w-full bg-primary-gray border-[1px] border-transparent hover:border-secondary-gray min-h-[96px] sm:p-8 p-4 rounded-[20px]">
+    <div className="flex justify-between items-center flex-row w-full min-w-full bg-primary-black border-[1px] border-transparent hover:border-secondary-gray min-h-[96px] sm:p-8 p-4 rounded-[20px]">
       <input
         placeholder="0.0"
         type="number"
@@ -48,7 +48,7 @@ export function RemoveLiquidityField2(props) {
   const { onClick, symbol } = props;
 
   return (
-    <div className="flex justify-between items-center flex-row w-full min-w-full bg-primary-gray border-[1px] border-transparent hover:border-secondary-gray min-h-[96px] sm:p-8 p-4 rounded-[20px]">
+    <div className="flex justify-between items-center flex-row w-full min-w-full bg-primary-black border-[1px] border-transparent hover:border-secondary-gray min-h-[96px] sm:p-8 p-4 rounded-[20px]">
       <div className="relative" onClick={onClick}>
         <button className="flex flex-row items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-bold text-white border border-white">
           {symbol}
@@ -69,7 +69,7 @@ export default function CoinField(props) {
   const { onClick, symbol, value, onChange, activeField } = props;
 
   return (
-    <div className="flex justify-between items-center flex-row w-full min-w-full bg-primary-gray border-[1px] border-transparent hover:border-secondary-gray min-h-[96px] sm:p-8 p-4 rounded-[20px]">
+    <div className="flex justify-between items-center flex-row w-full min-w-full bg-primary-black border-[1px] border-transparent hover:border-secondary-gray min-h-[96px] sm:p-8 p-4 rounded-[20px]">
       <input
         placeholder="0.0"
         type="number"

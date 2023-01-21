@@ -9,11 +9,12 @@ import Liquidity from "./Liquidity/Liquidity";
 const App = () => {
   return (
     <div className="App">
-      <NarBar />
       <SnackbarProvider maxSnack={3}>
         <Web3Provider
           render={(network) => (
             <div>
+              <NarBar />
+
               <Route exact path="/">
                 <CoinSwapper network={network} />
               </Route>
