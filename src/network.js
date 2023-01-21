@@ -1,8 +1,6 @@
 import { useEffect, useState, useRef } from "react";
-import { Contract, ethers } from "ethers";
-import { createTheme, ThemeProvider } from "@material-ui/core";
-import { SnackbarProvider } from "notistack";
-import ConnectWalletPage from "./Components/connectWalletPage";
+import { ethers } from "ethers";
+import WrongNetwork from "./Components/WrongNetwork";
 import {
   getAccount,
   getFactory,
@@ -13,24 +11,9 @@ import {
 import COINS from "./constants/coins";
 import * as chains from "./constants/chains";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#ff0000",
-      contrastText: "#ffffff",
-    },
-    secondary: {
-      main: "#9e9e9e",
-      contrastText: "#ffffff",
-    },
-  },
-});
-
-const autoReconnectDelay = 5000;
-
 const Web3Provider = (props) => {
   const [isConnected, setConnected] = useState(true);
-  let network = Object.create( {} )
+  let network = Object.create({});
   network.provider = useRef(null);
   network.signer = useRef(null);
   network.account = useRef(null);
@@ -42,7 +25,7 @@ const Web3Provider = (props) => {
   const backgroundListener = useRef(null);
   async function setupConnection() {
     try {
-      console.log('lets go!');
+      console.log("lets go!");
       network.provider = new ethers.providers.Web3Provider(window.ethereum);
       network.signer = await network.provider.getSigner();
       await getAccount().then(async (result) => {
@@ -68,10 +51,7 @@ const Web3Provider = (props) => {
           });
           // Get the factory address from the router
           await network.router.factory().then((factory_address) => {
-            network.factory = getFactory(
-              factory_address,
-              network.signer
-            );
+            network.factory = getFactory(factory_address, network.signer);
           });
           setConnected(true);
         } else {
@@ -79,7 +59,6 @@ const Web3Provider = (props) => {
           setConnected(false);
         }
       });
-
     } catch (e) {
       console.log(e);
     }
@@ -91,7 +70,7 @@ const Web3Provider = (props) => {
       try {
         // Check the account has not changed
         const account = await getAccount();
-        if (account != network.account) {
+        if (account !== network.account) {
           await setupConnection();
         }
         // const chainID = await getNetwork(network.provider);
@@ -126,7 +105,7 @@ const Web3Provider = (props) => {
     return (
       <div className="App">
         <div>
-          <ConnectWalletPage />
+          <WrongNetwork />
         </div>
       </div>
     );
