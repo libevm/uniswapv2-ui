@@ -5,13 +5,15 @@ import {
   getBalanceAndSymbol,
   swapTokens,
   getReserves,
+  getNetwork,
+  getProvider,
 } from "../ethereumFunctions";
 import CoinField from "./CoinField";
 import CoinDialog from "./CoinDialog";
 import Balance from "./Balance";
 import Reserve from "./Reserve";
 import LoadingButton from "../Components/LoadingButton";
-import WrongNetwork from "../Components/wrongNetwork";
+import WrongNetwork from "../Components/WrongNetwork";
 
 function CoinSwapper(props) {
   const { enqueueSnackbar } = useSnackbar();
@@ -175,6 +177,19 @@ function CoinSwapper(props) {
       });
   };
 
+  useEffect(() => {
+    const fetchNetwork = async () => {
+      const net = await getNetwork(getProvider());
+      if (net === 5001) {
+        setwrongNetworkOpen(false);
+      } else {
+        setwrongNetworkOpen(true);
+      }
+    };
+
+    fetchNetwork();
+  }, []);
+
   // The lambdas within these useEffects will be called when a particular dependency is updated. These dependencies
   // are defined in the array of variables passed to the function after the lambda expression. If there are no dependencies
   // the lambda will only ever be called when the component mounts. These are very useful for calculating new values
@@ -185,10 +200,6 @@ function CoinSwapper(props) {
   // This means that when the user selects a different coin to convert between, or the coins are swapped,
   // the new reserves will be calculated.
   useEffect(() => {
-    console.log(
-      "Trying to get Reserves between:\n" + coin1.address + "\n" + coin2.address
-    );
-
     if (coin1.address && coin2.address) {
       getReserves(
         coin1.address,
@@ -236,9 +247,6 @@ function CoinSwapper(props) {
   // updated has changed. This allows them to see when a transaction completes by looking at the balance output.
   useEffect(() => {
     const coinTimeout = setTimeout(() => {
-      console.log("props: ", props);
-      console.log("Checking balances...");
-
       if (coin1.address && coin2.address && props.network.account) {
         getReserves(
           coin1.address,
@@ -300,72 +308,79 @@ function CoinSwapper(props) {
           coins={props.network.coins}
           signer={props.network.signer}
         />
-        <WrongNetwork open={wrongNetworkOpen} />
 
         <div className="flex-1 flex justify-start items-center flex-col w-full mt-2">
           <div className="mt-10 w-full flex justify-center">
             <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full gradient-border p-[2px] rounded-3xl">
               <div className="w-full min-h-[400px] bg-gray-800 backdrop-blur-[4px] rounded-3xl shadow-card flex flex-col p-10">
-                <div className="mb-6">
-                  <CoinField
-                    activeField={true}
-                    value={field1Value}
-                    onClick={() => setDialog1Open(true)}
-                    onChange={handleChange.field1}
-                    symbol={
-                      coin1.symbol !== undefined ? coin1.symbol : "Select"
-                    }
-                  />
-                  <Balance
-                    balance={coin1.balance}
-                    symbol={coin1.symbol}
-                    format={formatBalance}
-                  />
-                </div>
+                {wrongNetworkOpen ? (
+                  <WrongNetwork></WrongNetwork>
+                ) : (
+                  <div>
+                    <div className="mb-6">
+                      <CoinField
+                        activeField={true}
+                        value={field1Value}
+                        onClick={() => setDialog1Open(true)}
+                        onChange={handleChange.field1}
+                        symbol={
+                          coin1.symbol !== undefined ? coin1.symbol : "Select"
+                        }
+                      />
+                      <Balance
+                        balance={coin1.balance}
+                        symbol={coin1.symbol}
+                        format={formatBalance}
+                      />
+                    </div>
 
-                <div className="mb-6 w-[100%]">
-                  <CoinField
-                    activeField={false}
-                    value={field2Value}
-                    onClick={() => setDialog2Open(true)}
-                    symbol={
-                      coin2.symbol !== undefined ? coin2.symbol : "Select"
-                    }
-                  />
-                  <Balance
-                    balance={coin2.balance}
-                    symbol={coin2.symbol}
-                    format={formatBalance}
-                  />
-                </div>
+                    <div className="mb-6 w-[100%]">
+                      <CoinField
+                        activeField={false}
+                        value={field2Value}
+                        onClick={() => setDialog2Open(true)}
+                        symbol={
+                          coin2.symbol !== undefined ? coin2.symbol : "Select"
+                        }
+                      />
+                      <Balance
+                        balance={coin2.balance}
+                        symbol={coin2.symbol}
+                        format={formatBalance}
+                      />
+                    </div>
 
-                <hr className="text-white"></hr>
+                    <hr className="text-white"></hr>
 
-                <div>
-                  <h3 className="text-center text-white font-bold">Reserves</h3>
-                  <div className="flex flex-col">
-                    <Reserve
-                      reserve={reserves[0]}
-                      symbol={coin1.symbol}
-                      format={formatReserve}
-                    />
-                    <Reserve
-                      reserve={reserves[1]}
-                      symbol={coin2.symbol}
-                      format={formatReserve}
-                    />
+                    <div>
+                      <h3 className="text-center text-white font-bold">
+                        Reserves
+                      </h3>
+                      <div className="flex flex-col">
+                        <Reserve
+                          reserve={reserves[0]}
+                          symbol={coin1.symbol}
+                          format={formatReserve}
+                        />
+                        <Reserve
+                          reserve={reserves[1]}
+                          symbol={coin2.symbol}
+                          format={formatReserve}
+                        />
+                      </div>
+                    </div>
+
+                    <hr className="text-white"></hr>
+
+                    <LoadingButton
+                      loading={loading}
+                      valid={isButtonEnabled()}
+                      onClick={swap}
+                    >
+                      Swap
+                    </LoadingButton>
                   </div>
-                </div>
-
-                <hr className="text-white"></hr>
-
-                <LoadingButton
-                  loading={loading}
-                  valid={isButtonEnabled()}
-                  onClick={swap}
-                >
-                  Swap
-                </LoadingButton>
+                )}
               </div>
             </div>
           </div>

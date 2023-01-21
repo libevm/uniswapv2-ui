@@ -1,35 +1,19 @@
-import React from "react";
-import {
-  Dialog,
-  Grid,
-  IconButton,
-  makeStyles,
-  Typography,
-  withStyles,
-} from "@material-ui/core";
-import MuiDialogTitle from "@material-ui/core/DialogTitle";
-import CloseIcon from "@material-ui/icons/Close";
+import { mantleLogo } from "../assets";
 
-const styles = (theme) => ({
-  dialogContainer: {
-    borderRadius: theme.spacing(2),
-  },
-});
-
-const useStyles = makeStyles(styles);
-
-export default function WrongNetwork(props) {
-
-  const classes = useStyles();
-  const {open} = props;
+const WrongNetwork = () => {
   return (
-    <Dialog
-      open={open}
-      fullWidth
-      maxWidth="sm"
-      classes={{ paper: classes.dialogContainer }}
-    >
-      <MuiDialogTitle>Unsupported Network</MuiDialogTitle>
-    </Dialog>
+    <div className="flex justify-center items-center flex-col w-full h-screen bg-primary-black">
+      <img
+        src={mantleLogo}
+        alt="Mantle Logo"
+        className="w-56 h-56 object-contain"
+      />
+      <p className="font-poppins font-normal text-primary-green text-lg text-center mt-10">
+        Please connect an Ethereum wallet to your browser and select Mantle
+        Testnet to use the application
+      </p>
+    </div>
   );
-}
+};
+
+export default WrongNetwork;

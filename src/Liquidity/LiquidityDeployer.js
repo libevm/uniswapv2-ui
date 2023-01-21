@@ -1,6 +1,11 @@
-import React, { useEffect } from "react";
+import { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
-import { getBalanceAndSymbol, getReserves } from "../ethereumFunctions";
+import {
+  getBalanceAndSymbol,
+  getReserves,
+  getNetwork,
+  getProvider,
+} from "../ethereumFunctions";
 
 import { addLiquidity, quoteAddLiquidity } from "./LiquidityFunctions";
 
@@ -8,43 +13,43 @@ import CoinField from "../CoinSwapper/CoinField";
 import CoinDialog from "../CoinSwapper/CoinDialog";
 import Balance from "../CoinSwapper/Balance";
 import LoadingButton from "../Components/LoadingButton";
-import WrongNetwork from "../Components/wrongNetwork";
+import WrongNetwork from "../Components/WrongNetwork";
 
 function LiquidityDeployer(props) {
   const { enqueueSnackbar } = useSnackbar();
 
   // Stores a record of whether their respective dialog window is open
-  const [dialog1Open, setDialog1Open] = React.useState(false);
-  const [dialog2Open, setDialog2Open] = React.useState(false);
-  const [wrongNetworkOpen, setwrongNetworkOpen] = React.useState(false);
+  const [dialog1Open, setDialog1Open] = useState(false);
+  const [dialog2Open, setDialog2Open] = useState(false);
+  const [wrongNetworkOpen, setwrongNetworkOpen] = useState(false);
 
   // Stores data about their respective coin
-  const [coin1, setCoin1] = React.useState({
+  const [coin1, setCoin1] = useState({
     address: undefined,
     symbol: undefined,
     balance: undefined,
   });
-  const [coin2, setCoin2] = React.useState({
+  const [coin2, setCoin2] = useState({
     address: undefined,
     symbol: undefined,
     balance: undefined,
   });
 
   // Stores the current reserves in the liquidity pool between coin1 and coin2
-  const [reserves, setReserves] = React.useState(["0.0", "0.0"]);
+  const [reserves, setReserves] = useState(["0.0", "0.0"]);
 
   // Stores the current value of their respective text box
-  const [field1Value, setField1Value] = React.useState("");
-  const [field2Value, setField2Value] = React.useState("");
+  const [field1Value, setField1Value] = useState("");
+  const [field2Value, setField2Value] = useState("");
 
   // Controls the loading button
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Stores the user's balance of liquidity tokens for the current pair
-  const [liquidityTokens, setLiquidityTokens] = React.useState("");
+  const [liquidityTokens, setLiquidityTokens] = useState("");
 
   // Used when getting a quote of liquidity
-  const [liquidityOut, setLiquidityOut] = React.useState([0, 0, 0]);
+  const [liquidityOut, setLiquidityOut] = useState([0, 0, 0]);
 
   // Switches the top and bottom coins, this is called when users hit the swap button or select the opposite
   // token in the dialog (e.g. if coin1 is TokenA and the user selects TokenB when choosing coin2)
@@ -189,6 +194,20 @@ function LiquidityDeployer(props) {
     }
   };
 
+  useEffect(() => {
+    const fetchNetwork = async () => {
+      const net = await getNetwork(getProvider());
+      console.log(net);
+      if (net === 5001) {
+        setwrongNetworkOpen(false);
+      } else {
+        setwrongNetworkOpen(true);
+      }
+    };
+
+    fetchNetwork();
+  }, []);
+
   // This hook is called when either of the state variables `coin1.address` or `coin2.address` change.
   // This means that when the user selects a different coin to convert between, or the coins are swapped,
   // the new reserves will be calculated.
@@ -316,86 +335,98 @@ function LiquidityDeployer(props) {
         coins={props.network.coins}
         signer={props.networksigner}
       />
-      <WrongNetwork open={wrongNetworkOpen} />
-
-      <div className="flex-1 flex justify-start items-center flex-col w-full">
-        <div className="mt-10 w-full flex justify-center">
-          <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full gradient-border p-[2px] rounded-3xl">
-            <div className="w-full min-h-[400px] bg-gray-800 backdrop-blur-[4px] rounded-3xl shadow-card flex flex-col p-10">
-              <div className="mb-4">
-                <CoinField
-                  activeField={true}
-                  value={field1Value}
-                  onClick={() => setDialog1Open(true)}
-                  onChange={handleChange.field1}
-                  symbol={coin1.symbol !== undefined ? coin1.symbol : "Select"}
-                />
-                <Balance
-                  balance={coin1.balance}
-                  symbol={coin1.symbol}
-                  format={formatBalance}
-                />
-              </div>
-
-              <div className="mb-2 w-[100%]">
-                <CoinField
-                  activeField={true}
-                  value={field2Value}
-                  onClick={() => setDialog2Open(true)}
-                  onChange={handleChange.field2}
-                  symbol={coin2.symbol !== undefined ? coin2.symbol : "Select"}
-                />
-                <Balance
-                  balance={coin2.balance}
-                  symbol={coin2.symbol}
-                  format={formatBalance}
-                />
-              </div>
-
-              <div>
-                <h3 className="text-center text-white font-bold text-lg">
-                  LP-Token Balance
-                </h3>
-                <div className="flex justify-center items-center w-full mt-2 ml-2">
-                  <p className="font-poppins font-normal text-white">
-                    {formatReserve(liquidityTokens, "UNI-V2")}
-                  </p>
+      {wrongNetworkOpen ? (
+        <WrongNetwork></WrongNetwork>
+      ) : (
+        <div className="flex-1 flex justify-start items-center flex-col w-full">
+          <div className="mt-10 w-full flex justify-center">
+            <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full gradient-border p-[2px] rounded-3xl">
+              <div className="w-full min-h-[400px] bg-gray-800 backdrop-blur-[4px] rounded-3xl shadow-card flex flex-col p-10">
+                <div className="mb-4">
+                  <CoinField
+                    activeField={true}
+                    value={field1Value}
+                    onClick={() => setDialog1Open(true)}
+                    onChange={handleChange.field1}
+                    symbol={
+                      coin1.symbol !== undefined ? coin1.symbol : "Select"
+                    }
+                  />
+                  <Balance
+                    balance={coin1.balance}
+                    symbol={coin1.symbol}
+                    format={formatBalance}
+                  />
                 </div>
-              </div>
 
-              <div className="relative min-w-full max-w-full gradient-border p-[2px] rounded-3xl">
-                <div className="w-full bg-gray-800 backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
-                  <div className="flex flex-col">
-                    <h6 className="font-bold text-lg text-center">Tokens In</h6>
-                    <div className="mx-auto">
-                      <div>{formatBalance(liquidityOut[0], coin1.symbol)}</div>
-                      <div>{formatBalance(liquidityOut[1], coin2.symbol)}</div>
-                    </div>
-                  </div>
-                  <div className="flex flex-col">
-                    <h6 className="font-bold text-lg text-center">
-                      Tokens Out
-                    </h6>
-                    <div className="mx-auto">
-                      {formatReserve(liquidityOut[2], "UNI-V2")}
-                    </div>
+                <div className="mb-2 w-[100%]">
+                  <CoinField
+                    activeField={true}
+                    value={field2Value}
+                    onClick={() => setDialog2Open(true)}
+                    onChange={handleChange.field2}
+                    symbol={
+                      coin2.symbol !== undefined ? coin2.symbol : "Select"
+                    }
+                  />
+                  <Balance
+                    balance={coin2.balance}
+                    symbol={coin2.symbol}
+                    format={formatBalance}
+                  />
+                </div>
+
+                <div>
+                  <h3 className="text-center text-white font-bold text-lg">
+                    LP-Token Balance
+                  </h3>
+                  <div className="flex justify-center items-center w-full mt-2 ml-2">
+                    <p className="font-poppins font-normal text-white">
+                      {formatReserve(liquidityTokens, "UNI-V2")}
+                    </p>
                   </div>
                 </div>
-              </div>
 
-              <LoadingButton
-                loading={loading}
-                valid={isButtonEnabled()}
-                success={false}
-                fail={false}
-                onClick={deploy}
-              >
-                Deploy
-              </LoadingButton>
+                <div className="relative min-w-full max-w-full gradient-border p-[2px] rounded-3xl">
+                  <div className="w-full bg-gray-800 backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
+                    <div className="flex flex-col">
+                      <h6 className="font-bold text-lg text-center">
+                        Tokens In
+                      </h6>
+                      <div className="mx-auto">
+                        <div>
+                          {formatBalance(liquidityOut[0], coin1.symbol)}
+                        </div>
+                        <div>
+                          {formatBalance(liquidityOut[1], coin2.symbol)}
+                        </div>
+                      </div>
+                    </div>
+                    <div className="flex flex-col">
+                      <h6 className="font-bold text-lg text-center">
+                        Tokens Out
+                      </h6>
+                      <div className="mx-auto">
+                        {formatReserve(liquidityOut[2], "UNI-V2")}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+
+                <LoadingButton
+                  loading={loading}
+                  valid={isButtonEnabled()}
+                  success={false}
+                  fail={false}
+                  onClick={deploy}
+                >
+                  Deploy
+                </LoadingButton>
+              </div>
             </div>
           </div>
         </div>
-      </div>
+      )}
     </div>
   );
 }
