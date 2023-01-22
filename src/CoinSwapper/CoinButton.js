@@ -1,21 +1,4 @@
-import React from "react";
-import { ButtonBase, Grid, makeStyles, Typography } from "@material-ui/core";
 import PropTypes from "prop-types";
-import * as COLORS from "@material-ui/core/colors";
-
-const useStyles = makeStyles((theme) => ({
-  button: {
-    width: "100%",
-    paddingTop: theme.spacing(0.5),
-    paddingBottom: theme.spacing(0.5),
-    "&:hover, &$focusVisible": {
-      backgroundColor: COLORS.grey[200],
-    },
-  },
-  coinName: {
-    opacity: 0.6,
-  },
-}));
 
 CoinButton.propTypes = {
   coinName: PropTypes.string.isRequired,
@@ -24,17 +7,17 @@ CoinButton.propTypes = {
 };
 
 export default function CoinButton(props) {
-  const { coinName, coinAbbr, onClick, ...other } = props;
-  const classes = useStyles();
+  const { coinName, coinAbbr, onClick } = props;
 
   return (
-    <ButtonBase focusRipple className={classes.button} onClick={onClick}>
-      <Grid container direction="column">
-        <Typography variant="h6">{coinAbbr}</Typography>
-        <Typography variant="body2" className={classes.coinName}>
-          {coinName}
-        </Typography>
-      </Grid>
-    </ButtonBase>
+    <button
+      className="w-full flex items-center justify-center px-6 py-2 rounded-2xl hover:bg-secondary-gray"
+      onClick={onClick}
+    >
+      <div>
+        <div className="text-white font-bold">{coinAbbr}</div>
+        <div className="text-primary-green">{coinName}</div>
+      </div>
+    </button>
   );
 }
