@@ -299,12 +299,14 @@ function CoinSwapper(props) {
         <CoinDialog
           open={dialog1Open}
           onClose={onToken1Selected}
+          closeModal={() => setDialog1Open(false)}
           coins={props.network.coins}
           props={props.network.signer}
         />
         <CoinDialog
           open={dialog2Open}
           onClose={onToken2Selected}
+          closeModal={() => setDialog2Open(false)}
           coins={props.network.coins}
           signer={props.network.signer}
         />
