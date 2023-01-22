@@ -1,5 +1,4 @@
 import React from "react";
-import { CircularProgress } from "@material-ui/core";
 
 export default function LoadingButton(props) {
   const { children, loading, valid, onClick } = props;
@@ -16,12 +15,6 @@ export default function LoadingButton(props) {
       >
         {children}
       </button>
-      {loading && (
-        <CircularProgress
-          size={24}
-          className="absolute top-2/4 left-2/4 mt-[-12px] ml-[-12px]"
-        />
-      )}
     </div>
   );
 }
