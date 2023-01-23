@@ -75,10 +75,10 @@ export default function CoinField(props) {
         value={value}
         disabled={!activeField}
         onChange={onChange}
-        className="w-full flex-1 bg-transparent outline-none font-poppins font-black text-lg text-white"
+        className="w-full flex-1 bg-transparent outline-none font-poppins font-medium text-md text-white"
       />
       <div className="relative" onClick={onClick}>
-        <button className="flex flex-row items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-bold text-white border border-white">
+        <button className="flex flex-row items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-medium text-white">
           {symbol}
         </button>
       </div>
