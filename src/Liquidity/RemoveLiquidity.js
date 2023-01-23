@@ -323,7 +323,7 @@ function LiquidityRemover(props) {
       ) : (
         <div className="flex-1 flex justify-start items-center flex-col w-full">
           <div className="mt-10 w-full flex justify-center">
-            <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full gradient-border p-[2px] rounded-3xl">
+            <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full p-[2px] rounded-3xl">
               <div className="w-full min-h-[400px] bg-primary-gray backdrop-blur-[4px] rounded-3xl shadow-card flex flex-col p-10">
                 <div className="mb-4">
                   <RemoveLiquidityField1
@@ -357,7 +357,7 @@ function LiquidityRemover(props) {
                   </div>
                 </div>
 
-                <div className="relative min-w-full max-w-full gradient-border p-[2px] rounded-3xl">
+                <div className="relative min-w-full max-w-full p-[2px] rounded-3xl">
                   <div className="w-full bg-primary-black backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
                     <div className="flex flex-col">
                       <h6 className="font-bold text-lg text-center">

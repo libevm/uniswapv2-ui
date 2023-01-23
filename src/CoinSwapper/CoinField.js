@@ -68,7 +68,7 @@ export default function CoinField(props) {
   const { onClick, symbol, value, onChange, activeField } = props;
 
   return (
-    <div className="flex justify-between items-center flex-row w-full min-w-full bg-primary-black border-[1px] border-transparent hover:border-secondary-gray min-h-[96px] sm:p-8 p-4 rounded-[20px]">
+    <div className="flex justify-between items-center flex-row w-full min-w-full h-20 bg-primary-black sm:p-8 p-4 rounded-2xl">
       <input
         placeholder="0.0"
         type="number"
