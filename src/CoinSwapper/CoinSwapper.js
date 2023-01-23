@@ -319,13 +319,13 @@ function CoinSwapper(props) {
 
         <div className="flex-1 flex justify-start items-center flex-col w-full mt-2">
           <div className="mt-10 w-full flex justify-center">
-            <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full gradient-border p-[2px] rounded-3xl">
+            <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full p-[2px] rounded-3xl">
               <div className="w-full min-h-[400px] bg-primary-gray backdrop-blur-[4px] rounded-3xl shadow-card flex flex-col p-10">
                 {wrongNetworkOpen ? (
                   <WrongNetwork></WrongNetwork>
                 ) : (
                   <div>
-                    <div className="mb-6">
+                    <div>
                       <CoinField
                         activeField={true}
                         value={field1Value}
@@ -341,6 +341,26 @@ function CoinSwapper(props) {
                         format={formatBalance}
                       />
                     </div>
+                    <button
+                      className="flex items-center justify-center p-2 mx-auto"
+                      onClick={switchFields}
+                    >
+                      <svg
+                        aria-hidden="true"
+                        focusable="false"
+                        data-prefix="fas"
+                        data-icon="arrow-down"
+                        role="img"
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 384 512"
+                        className="text-primary-green h-4"
+                      >
+                        <path
+                          fill="currentColor"
+                          d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"
+                        ></path>
+                      </svg>
+                    </button>
 
                     <div className="mb-6 w-[100%]">
                       <CoinField
@@ -357,11 +377,8 @@ function CoinSwapper(props) {
                         format={formatBalance}
                       />
                     </div>
-
-                    <hr className="text-white"></hr>
-
-                    <div>
-                      <h3 className="text-center text-white font-bold">
+                    <div className="my-10">
+                      <h3 className="text-center text-white font-bold text-2xl">
                         Reserves
                       </h3>
                       <div className="flex flex-col">
@@ -377,9 +394,6 @@ function CoinSwapper(props) {
                         />
                       </div>
                     </div>
-
-                    <hr className="text-white"></hr>
-
                     <LoadingButton
                       loading={loading}
                       valid={isButtonEnabled()}
