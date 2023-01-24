@@ -320,7 +320,7 @@ function CoinSwapper(props) {
         <div className="flex-1 flex justify-start items-center flex-col w-full mt-2">
           <div className="mt-10 w-full flex justify-center">
             <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full p-[2px] rounded-3xl">
-              <div className="w-full min-h-[400px] bg-primary-gray backdrop-blur-[4px] rounded-3xl shadow-card flex flex-col p-10">
+              <div className="w-full bg-primary-gray backdrop-blur-[4px] rounded-3xl shadow-card flex flex-col p-10">
                 {wrongNetworkOpen ? (
                   <WrongNetwork></WrongNetwork>
                 ) : (
@@ -376,23 +376,6 @@ function CoinSwapper(props) {
                         symbol={coin2.symbol}
                         format={formatBalance}
                       />
-                    </div>
-                    <div className="my-10">
-                      <h3 className="text-center text-white font-bold text-2xl">
-                        Reserves
-                      </h3>
-                      <div className="flex flex-col">
-                        <Reserve
-                          reserve={reserves[0]}
-                          symbol={coin1.symbol}
-                          format={formatReserve}
-                        />
-                        <Reserve
-                          reserve={reserves[1]}
-                          symbol={coin2.symbol}
-                          format={formatReserve}
-                        />
-                      </div>
                     </div>
                     <LoadingButton
                       loading={loading}

@@ -12,6 +12,7 @@ import { addLiquidity, quoteAddLiquidity } from "./LiquidityFunctions";
 import CoinField from "../CoinSwapper/CoinField";
 import CoinDialog from "../CoinSwapper/CoinDialog";
 import Balance from "../Components/Balance";
+import Reserve from "../Components/Reserve";
 import LoadingButton from "../Components/LoadingButton";
 import WrongNetwork from "../Components/WrongNetwork";
 
@@ -378,18 +379,25 @@ function LiquidityDeployer(props) {
                   />
                 </div>
 
-                <div>
-                  <h3 className="text-center text-white font-bold text-lg">
-                    LP-Token Balance
+                <div className="mt-4 mb-6">
+                  <h3 className="text-center text-white font-semibold text-xl">
+                    Reserves
                   </h3>
-                  <div className="flex justify-center items-center w-full mt-2 ml-2">
-                    <p className="font-poppins font-normal text-white">
-                      {formatReserve(liquidityTokens, "UNI-V2")}
-                    </p>
+                  <div className="flex flex-col">
+                    <Reserve
+                      reserve={reserves[0]}
+                      symbol={coin1.symbol}
+                      format={formatReserve}
+                    />
+                    <Reserve
+                      reserve={reserves[1]}
+                      symbol={coin2.symbol}
+                      format={formatReserve}
+                    />
                   </div>
                 </div>
 
-                <div className="relative min-w-full max-w-full p-[2px] rounded-3xl">
+                <div className="relative min-w-full max-w-full p-[2px] rounded-3xl mb-4">
                   <div className="w-full bg-primary-black backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
                     <div className="flex flex-col">
                       <h6 className="font-bold text-lg text-center">
@@ -406,10 +414,10 @@ function LiquidityDeployer(props) {
                     </div>
                     <div className="flex flex-col">
                       <h6 className="font-bold text-lg text-center">
-                        Tokens Out
+                        Tokens Outf
                       </h6>
                       <div className="mx-auto">
-                        {formatReserve(liquidityOut[2], "UNI-V2")}
+                        {formatBalance(liquidityOut[2], "UNI-V2")}
                       </div>
                     </div>
                   </div>
