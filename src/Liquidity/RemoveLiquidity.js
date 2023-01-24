@@ -328,36 +328,36 @@ function LiquidityRemover(props) {
                 <div className="mb-4">
                   <RemoveLiquidityField1
                     activeField={true}
-                    value={field1Value}
-                    onClick={() => setDialog1Open(true)}
-                    onChange={handleChange.field1}
-                    symbol={
+                    onClick1={() => setDialog1Open(true)}
+                    onClick2={() => setDialog2Open(true)}
+                    symbol1={
                       coin1.symbol !== undefined ? coin1.symbol : "Select"
+                    }
+                    symbol2={
+                      coin2.symbol !== undefined ? coin2.symbol : "Select"
                     }
                   />
                 </div>
                 <div className="mb-2 w-[100%]">
                   <RemoveLiquidityField2
                     activeField={true}
-                    onClick={() => setDialog2Open(true)}
-                    symbol={
-                      coin2.symbol !== undefined ? coin2.symbol : "Select"
-                    }
+                    value={field1Value}
+                    onChange={handleChange.field1}
                   />
                 </div>
 
-                <div>
-                  <h3 className="text-center text-white font-bold text-lg">
+                <div className="mt-4 mb-6">
+                  <h3 className="text-center text-white font-semibold text-lg">
                     LP-Token Balance
                   </h3>
-                  <div className="flex justify-center items-center w-full mt-2 ml-2">
+                  <div className="flex justify-center items-center w-full">
                     <p className="font-poppins font-normal text-white">
                       {formatReserve(liquidityTokens, "UNI-V2")}
                     </p>
                   </div>
                 </div>
 
-                <div className="relative min-w-full max-w-full p-[2px] rounded-3xl">
+                <div className="relative min-w-full max-w-full p-[2px] rounded-3xl mb-4">
                   <div className="w-full bg-primary-black backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
                     <div className="flex flex-col">
                       <h6 className="font-bold text-lg text-center">

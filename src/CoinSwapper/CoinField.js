@@ -16,22 +16,22 @@ export function RemoveLiquidityField1(props) {
   //      onChange - (e) => void - Called when the text field changes
   //      activeField - boolean - Whether text can be entered into this field or not
 
-  const { onClick, symbol, value, onChange, activeField } = props;
+  const { onClick1, onClick2, symbol1, symbol2 } = props;
+
   return (
-    <div className="flex justify-between items-center flex-row w-full min-w-full bg-primary-black border-[1px] border-transparent hover:border-secondary-gray min-h-[96px] sm:p-8 p-4 rounded-[20px]">
-      <input
-        placeholder="0.0"
-        type="number"
-        value={value}
-        disabled={!activeField}
-        onChange={onChange}
-        className="w-full flex-1 bg-transparent outline-none font-poppins font-black text-lg text-white"
-      />
-      <div className="relative" onClick={onClick}>
-        <button className="flex flex-row items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-bold text-white border border-white">
-          {symbol}
-        </button>
-      </div>
+    <div className="flex justify-around items-center flex-row w-full min-w-full h-20 sm:p-8 p-4 rounded-2xl">
+      <button
+        onClick={onClick1}
+        className="flex flex-row items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-medium text-white"
+      >
+        {symbol1}
+      </button>
+      <button
+        onClick={onClick2}
+        className="flex flex-row items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-medium text-white"
+      >
+        {symbol2}
+      </button>
     </div>
   );
 }
@@ -44,15 +44,17 @@ export function RemoveLiquidityField2(props) {
   //      onChange - (e) => void - Called when the text field changes
   //      activeField - boolean - Whether text can be entered into this field or not
 
-  const { onClick, symbol } = props;
-
+  const { value, onChange, activeField } = props;
   return (
-    <div className="flex justify-between items-center flex-row w-full min-w-full bg-primary-black border-[1px] border-transparent hover:border-secondary-gray min-h-[96px] sm:p-8 p-4 rounded-[20px]">
-      <div className="relative" onClick={onClick}>
-        <button className="flex flex-row items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-bold text-white border border-white">
-          {symbol}
-        </button>
-      </div>
+    <div className="flex justify-between items-center flex-row w-full min-w-full h-20 bg-primary-black sm:p-8 p-4 rounded-2xl">
+      <input
+        placeholder="0.0"
+        type="number"
+        value={value}
+        disabled={!activeField}
+        onChange={onChange}
+        className="w-full flex-1 bg-transparent outline-none font-poppins font-medium text-md text-white"
+      />
     </div>
   );
 }
