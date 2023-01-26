@@ -338,105 +338,107 @@ function LiquidityDeployer(props) {
         coins={props.network.coins}
         signer={props.networksigner}
       />
-      {wrongNetworkOpen ? (
-        <WrongNetwork></WrongNetwork>
-      ) : (
-        <div className="flex-1 flex justify-start items-center flex-col w-full">
-          <div className="mt-10 w-full flex justify-center">
-            <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full p-[2px] rounded-3xl">
-              <div className="w-full min-h-[400px] bg-primary-gray backdrop-blur-[4px] rounded-3xl shadow-card flex flex-col p-10">
-                <div className="mb-4">
-                  <CoinField
-                    activeField={true}
-                    value={field1Value}
-                    onClick={() => setDialog1Open(true)}
-                    onChange={handleChange.field1}
-                    symbol={
-                      coin1.symbol !== undefined ? coin1.symbol : "Select"
-                    }
-                  />
-                  <Balance
-                    balance={coin1.balance}
-                    symbol={coin1.symbol}
-                    format={formatBalance}
-                  />
-                </div>
-
-                <div className="mb-2 w-[100%]">
-                  <CoinField
-                    activeField={true}
-                    value={field2Value}
-                    onClick={() => setDialog2Open(true)}
-                    onChange={handleChange.field2}
-                    symbol={
-                      coin2.symbol !== undefined ? coin2.symbol : "Select"
-                    }
-                  />
-                  <Balance
-                    balance={coin2.balance}
-                    symbol={coin2.symbol}
-                    format={formatBalance}
-                  />
-                </div>
-
-                <div className="mt-4 mb-6">
-                  <h3 className="text-center text-white font-semibold text-xl">
-                    Reserves
-                  </h3>
-                  <div className="flex flex-col">
-                    <Reserve
-                      reserve={reserves[0]}
+      <div className="flex-1 flex justify-start items-center flex-col w-full">
+        <div className="mt-10 w-full flex justify-center">
+          <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full p-[2px] rounded-3xl">
+            <div className="w-full min-h-[400px] bg-primary-gray backdrop-blur-[4px] rounded-3xl shadow-card flex flex-col p-10">
+              {wrongNetworkOpen ? (
+                <WrongNetwork></WrongNetwork>
+              ) : (
+                <div>
+                  <div className="mb-4">
+                    <CoinField
+                      activeField={true}
+                      value={field1Value}
+                      onClick={() => setDialog1Open(true)}
+                      onChange={handleChange.field1}
+                      symbol={
+                        coin1.symbol !== undefined ? coin1.symbol : "Select"
+                      }
+                    />
+                    <Balance
+                      balance={coin1.balance}
                       symbol={coin1.symbol}
-                      format={formatReserve}
+                      format={formatBalance}
                     />
-                    <Reserve
-                      reserve={reserves[1]}
+                  </div>
+
+                  <div className="mb-2 w-[100%]">
+                    <CoinField
+                      activeField={true}
+                      value={field2Value}
+                      onClick={() => setDialog2Open(true)}
+                      onChange={handleChange.field2}
+                      symbol={
+                        coin2.symbol !== undefined ? coin2.symbol : "Select"
+                      }
+                    />
+                    <Balance
+                      balance={coin2.balance}
                       symbol={coin2.symbol}
-                      format={formatReserve}
+                      format={formatBalance}
                     />
                   </div>
-                </div>
 
-                <div className="relative min-w-full max-w-full p-[2px] rounded-3xl mb-4">
-                  <div className="w-full bg-primary-black backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
+                  <div className="mt-4 mb-6">
+                    <h3 className="text-center text-white font-semibold text-xl">
+                      Reserves
+                    </h3>
                     <div className="flex flex-col">
-                      <h6 className="font-bold text-lg text-center">
-                        Tokens In
-                      </h6>
-                      <div className="mx-auto">
-                        <div>
-                          {formatBalance(liquidityOut[0], coin1.symbol)}
-                        </div>
-                        <div>
-                          {formatBalance(liquidityOut[1], coin2.symbol)}
+                      <Reserve
+                        reserve={reserves[0]}
+                        symbol={coin1.symbol}
+                        format={formatReserve}
+                      />
+                      <Reserve
+                        reserve={reserves[1]}
+                        symbol={coin2.symbol}
+                        format={formatReserve}
+                      />
+                    </div>
+                  </div>
+
+                  <div className="relative min-w-full max-w-full p-[2px] rounded-3xl mb-4">
+                    <div className="w-full bg-primary-black backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
+                      <div className="flex flex-col">
+                        <h6 className="font-bold text-lg text-center">
+                          Tokens In
+                        </h6>
+                        <div className="mx-auto">
+                          <div>
+                            {formatBalance(liquidityOut[0], coin1.symbol)}
+                          </div>
+                          <div>
+                            {formatBalance(liquidityOut[1], coin2.symbol)}
+                          </div>
                         </div>
                       </div>
-                    </div>
-                    <div className="flex flex-col">
-                      <h6 className="font-bold text-lg text-center">
-                        Tokens Outf
-                      </h6>
-                      <div className="mx-auto">
-                        {formatBalance(liquidityOut[2], "UNI-V2")}
+                      <div className="flex flex-col">
+                        <h6 className="font-bold text-lg text-center">
+                          Tokens Outf
+                        </h6>
+                        <div className="mx-auto">
+                          {formatBalance(liquidityOut[2], "UNI-V2")}
+                        </div>
                       </div>
                     </div>
                   </div>
-                </div>
 
-                <LoadingButton
-                  loading={loading}
-                  valid={isButtonEnabled()}
-                  success={false}
-                  fail={false}
-                  onClick={deploy}
-                >
-                  Deploy
-                </LoadingButton>
-              </div>
+                  <LoadingButton
+                    loading={loading}
+                    valid={isButtonEnabled()}
+                    success={false}
+                    fail={false}
+                    onClick={deploy}
+                  >
+                    Deploy
+                  </LoadingButton>
+                </div>
+              )}
             </div>
           </div>
         </div>
-      )}
+      </div>
     </div>
   );
 }

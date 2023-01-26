@@ -100,23 +100,7 @@ const Web3Provider = (props) => {
     return () => clearInterval(backgroundListener.current);
   }, []);
 
-  const renderNotConnected = () => {
-    console.log("Rendering");
-    return (
-      <div className="App">
-        <div>
-          <WrongNetwork />
-        </div>
-      </div>
-    );
-  };
-
-  return (
-    <>
-      {!isConnected && renderNotConnected()}
-      {isConnected && <div> {props.render(network)}</div>}
-    </>
-  );
+  return <>{props.render(network)}</>;
 };
 
 export default Web3Provider;
