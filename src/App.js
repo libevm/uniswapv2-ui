@@ -15,7 +15,7 @@ const App = () => {
             <div>
               <NarBar />
 
-              <Route exact path="/">
+              <Route exact path="/swap">
                 <CoinSwapper network={network} />
               </Route>
               <Route exact path="/liquidity">

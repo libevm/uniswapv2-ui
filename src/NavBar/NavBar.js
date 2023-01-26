@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-import { MenuItems } from "./MenuItems";
+import { Link, useLocation } from "react-router-dom";
 import { getAccount } from "../ethereumFunctions";
 
 const Navbar = () => {
@@ -59,19 +58,32 @@ const Navbar = () => {
             </svg>
           </div>
           <div className="flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0 mx-auto">
-            {MenuItems.map((item, index) => {
-              return (
-                <li className="list-none" key={index}>
-                  <Link
-                    className="text-gray-500 no-underline p-3 text-sm font-bold hover:text-primary-green"
-                    aria-current="page"
-                    to={item.url}
-                  >
-                    {item.title}
-                  </Link>
-                </li>
-              );
-            })}
+            <li className="list-none">
+              <Link
+                className={`${
+                  useLocation().pathname === "/swap"
+                    ? "text-primary-green"
+                    : "text-gray-500"
+                } "no-underline p-3 text-sm font-bold "`}
+                aria-current="page"
+                to={"/swap"}
+              >
+                Swap
+              </Link>
+            </li>
+            <li className="list-none">
+              <Link
+                className={`${
+                  useLocation().pathname === "/liquidity"
+                    ? "text-primary-green"
+                    : "text-gray-500"
+                } "no-underline p-3 text-sm font-bold "`}
+                aria-current="page"
+                to={"/liquidity"}
+              >
+                Liquidity
+              </Link>
+            </li>
           </div>
           <div className="bg-primary-green border-none outline-none px-4 py-2 font-poppins font-medium text-base text-white rounded-3xl leading-[24px] transition-all">
             {address}
