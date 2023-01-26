@@ -25,7 +25,7 @@ export default function CoinDialog(props) {
   // Called when the user tries to input a custom address, this function will validate the address and will either
   // then close the dialog and return the validated address, or will display an error.
   const submit = () => {
-    if (doesTokenExist(address, signer)) {
+    if (doesTokenExist(address, signer) === true) {
       exit(address);
     } else {
       setError(true);
@@ -34,15 +34,15 @@ export default function CoinDialog(props) {
 
   // Resets any fields in the dialog (in case it's opened in the future) and calls the `onClose` prop
   const exit = (value) => {
-    setError("");
-    setAddress("");
     onClose(value);
+    setAddress("");
+    setError(false);
   };
 
   const close = () => {
-    setError("");
     setAddress("");
     closeModal();
+    setError(false);
   };
 
   return (
@@ -99,7 +99,6 @@ export default function CoinDialog(props) {
                     </svg>
                   </div>
                   <input
-                    type="text"
                     placeholder="Search name or paste address"
                     className={`${
                       error && " border-2 border-red-700 "
