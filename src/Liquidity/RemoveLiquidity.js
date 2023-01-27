@@ -307,15 +307,21 @@ function LiquidityRemover(props) {
         open={dialog1Open}
         onClose={onToken1Selected}
         closeModal={() => setDialog1Open(false)}
-        coins={props.network.coins}
+        accountAddress={props.network.account}
+        provider={props.network.provider}
         signer={props.network.signer}
+        weth_address={props.network.weth.address}
+        coins={props.network.coins}
       />
       <CoinDialog
         open={dialog2Open}
         onClose={onToken2Selected}
         closeModal={() => setDialog2Open(false)}
-        coins={props.network.coins}
+        accountAddress={props.network.account}
+        provider={props.network.provider}
         signer={props.network.signer}
+        weth_address={props.network.weth.address}
+        coins={props.network.coins}
       />
 
       <div className="flex-1 flex justify-start items-center flex-col w-full">

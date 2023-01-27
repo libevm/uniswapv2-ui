@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import CoinButton from "./CoinButton";
-import { doesTokenExist } from "../ethereumFunctions";
+import { doesTokenExist, getBalanceAndSymbol } from "../ethereumFunctions";
 import PropTypes from "prop-types";
 
 CoinDialog.propTypes = {
@@ -17,7 +17,16 @@ export default function CoinDialog(props) {
   // When the dialog closes, it will call the `onClose` prop with 1 argument which will either be undefined (if the
   // user closes the dialog without selecting anything), or will be a string containing the address of a coin.
 
-  const { onClose, open, closeModal, coins, signer } = props;
+  const {
+    onClose,
+    open,
+    closeModal,
+    accountAddress,
+    provider,
+    signer,
+    weth_address,
+    coins,
+  } = props;
 
   const [address, setAddress] = useState("");
   const [error, setError] = useState(false);
@@ -121,6 +130,12 @@ export default function CoinDialog(props) {
                         coinName={coin.name}
                         coinAbbr={coin.abbr}
                         onClick={() => exit(coin.address)}
+                        accountAddress={accountAddress}
+                        address={coin.address}
+                        provider={provider}
+                        signer={signer}
+                        weth_address={weth_address}
+                        coins={coins}
                       />
                     </li>
                   ))}

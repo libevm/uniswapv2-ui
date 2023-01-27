@@ -11,7 +11,6 @@ import {
 import CoinField from "./CoinField";
 import CoinDialog from "./CoinDialog";
 import Balance from "../Components/Balance";
-import Reserve from "../Components/Reserve";
 import LoadingButton from "../Components/LoadingButton";
 import WrongNetwork from "../Components/WrongNetwork";
 
@@ -65,12 +64,6 @@ function CoinSwapper(props) {
   const formatBalance = (balance, symbol) => {
     if (balance && symbol)
       return parseFloat(balance).toPrecision(8) + " " + symbol;
-    else return "0.0";
-  };
-
-  // Turns the coin's reserves into something nice and readable
-  const formatReserve = (reserve, symbol) => {
-    if (reserve && symbol) return reserve + " " + symbol;
     else return "0.0";
   };
 
@@ -306,15 +299,21 @@ function CoinSwapper(props) {
           open={dialog1Open}
           onClose={onToken1Selected}
           closeModal={() => setDialog1Open(false)}
+          accountAddress={props.network.account}
+          provider={props.network.provider}
+          signer={props.network.signer}
+          weth_address={props.network.weth.address}
           coins={props.network.coins}
-          props={props.network.signer}
         />
         <CoinDialog
           open={dialog2Open}
           onClose={onToken2Selected}
           closeModal={() => setDialog2Open(false)}
-          coins={props.network.coins}
+          accountAddress={props.network.account}
+          provider={props.network.provider}
           signer={props.network.signer}
+          weth_address={props.network.weth.address}
+          coins={props.network.coins}
         />
 
         <div className="flex-1 flex justify-start items-center flex-col w-full mt-2">

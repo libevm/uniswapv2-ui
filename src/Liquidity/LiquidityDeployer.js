@@ -328,15 +328,21 @@ function LiquidityDeployer(props) {
         open={dialog1Open}
         onClose={onToken1Selected}
         closeModal={() => setDialog1Open(false)}
-        coins={props.network.coins}
+        accountAddress={props.network.account}
+        provider={props.network.provider}
         signer={props.network.signer}
+        weth_address={props.network.weth.address}
+        coins={props.network.coins}
       />
       <CoinDialog
         open={dialog2Open}
         onClose={onToken2Selected}
         closeModal={() => setDialog2Open(false)}
+        accountAddress={props.network.account}
+        provider={props.network.provider}
+        signer={props.network.signer}
+        weth_address={props.network.weth.address}
         coins={props.network.coins}
-        signer={props.networksigner}
       />
       <div className="flex-1 flex justify-start items-center flex-col w-full">
         <div className="mt-10 w-full flex justify-center">
