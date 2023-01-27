@@ -1,4 +1,5 @@
 import PropTypes from "prop-types";
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 CoinField.propTypes = {
   onClick: PropTypes.func.isRequired,
@@ -22,15 +23,17 @@ export function RemoveLiquidityField1(props) {
     <div className="flex justify-around items-center flex-row w-full min-w-full h-20 sm:p-8 p-4 rounded-2xl">
       <button
         onClick={onClick1}
-        className="flex flex-row items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-medium text-white"
+        className="flex flex-row justify-around items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-medium text-white"
       >
-        {symbol1}
+        <span>{symbol1}</span>
+        <ChevronDownIcon className="ml-2 h-5 w-5 text-white transition duration-150 ease-in-out group-hover:text-opacity-80"></ChevronDownIcon>
       </button>
       <button
         onClick={onClick2}
-        className="flex flex-row items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-medium text-white"
+        className="flex flex-row justify-around items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-medium text-white"
       >
-        {symbol2}
+        <span>{symbol2}</span>
+        <ChevronDownIcon className="ml-2 h-5 w-5 text-white transition duration-150 ease-in-out group-hover:text-opacity-80"></ChevronDownIcon>
       </button>
     </div>
   );
@@ -80,8 +83,9 @@ export default function CoinField(props) {
         className="w-full flex-1 bg-transparent outline-none font-poppins font-medium text-md text-white"
       />
       <div className="relative" onClick={onClick}>
-        <button className="flex flex-row items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-medium text-white">
-          {symbol}
+        <button className="flex flex-row justify-around items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-medium text-white">
+          <span>{symbol}</span>
+          <ChevronDownIcon className="ml-2 h-5 w-5 text-white transition duration-150 ease-in-out group-hover:text-opacity-80"></ChevronDownIcon>
         </button>
       </div>
     </div>
