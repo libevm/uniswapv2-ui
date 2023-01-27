@@ -11,7 +11,7 @@ export default function LoadingButton(props) {
           valid
             ? "bg-primary-green text-white"
             : "text-primary-green bg-primary-black"
-        } "border-none outline-none px-16 py-2 font-poppins font-bold text-lg rounded-2xl leading-[24px] transition-all min-h-[56px]"`}
+        } "border-none outline-none px-16 py-2 font-poppins font-semibold text-medium rounded-2xl leading-[24px] transition-all min-h-[56px]"`}
       >
         {children}
       </button>
