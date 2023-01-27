@@ -1,42 +1,7 @@
 import { mantleLogo } from "../assets";
+import { switchNetwork } from "../network";
 
 const WrongNetwork = () => {
-  const { ethereum } = window;
-
-  const switchNetwork = async () => {
-    try {
-      await ethereum.request({
-        method: "wallet_switchEthereumChain",
-        params: [{ chainId: "0x1389" }],
-      });
-    } catch (switchError) {
-      // This error code indicates that the chain has not been added to MetaMask.
-      if (switchError.code === 4902) {
-        try {
-          await ethereum.request({
-            method: "wallet_addEthereumChain",
-            params: [
-              {
-                chainId: "0x1389",
-                chainName: "Mantle Testnet",
-                nativeCurrency: {
-                  name: "BIT Token",
-                  symbol: "BIT",
-                  decimals: 18,
-                },
-                rpcUrls: ["https://rpc.testnet.mantle.xyz"],
-                blockExplorerUrls: ["https://explorer.testnet.mantle.xyz"],
-              },
-            ],
-          });
-        } catch (addError) {
-          console.error(addError);
-        }
-      }
-      console.log(switchError);
-    }
-  };
-
   return (
     <div className="flex justify-center items-center flex-col bg-black p-8">
       <img src={mantleLogo} alt="Mantle Logo" />
