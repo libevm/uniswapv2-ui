@@ -79,13 +79,13 @@ function LiquidityDeployer(props) {
   const formatBalance = (balance, symbol) => {
     if (balance && symbol)
       return parseFloat(balance).toPrecision(8) + " " + symbol;
-    else return "0.0";
+    else return "";
   };
 
   // Turns the coin's reserves into something nice and readable
   const formatReserve = (reserve, symbol) => {
     if (reserve && symbol) return reserve + " " + symbol;
-    else return "0.0";
+    else return "";
   };
 
   // Determines whether the button should be enabled or not
@@ -415,7 +415,7 @@ function LiquidityDeployer(props) {
                       </div>
                       <div className="flex flex-col">
                         <h6 className="font-bold text-lg text-center">
-                          Tokens Outf
+                          Tokens Out
                         </h6>
                         <div className="mx-auto">
                           {formatBalance(liquidityOut[2], "UNI-V2")}

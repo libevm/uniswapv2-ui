@@ -61,12 +61,12 @@ const Navbar = () => {
             <li className="list-none">
               <Link
                 className={`${
-                  useLocation().pathname === "/swap"
+                  useLocation().pathname === "/"
                     ? "text-primary-green"
                     : "text-gray-500"
                 } "no-underline p-3 text-sm font-bold "`}
                 aria-current="page"
-                to={"/swap"}
+                to={"/"}
               >
                 Swap
               </Link>

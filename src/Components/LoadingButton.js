@@ -3,7 +3,7 @@ import React from "react";
 export default function LoadingButton(props) {
   const { children, loading, valid, onClick } = props;
   return (
-    <div className="mt-8 relative flex items-center justify-center">
+    <div className="mt-10 relative flex items-center justify-center">
       <button
         disabled={loading || !valid}
         onClick={onClick}
