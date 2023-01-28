@@ -56,7 +56,7 @@ const Connect = () => {
         <Popover className="relative">
           {({ open }) => (
             <>
-              <Popover.Button className="flex flex-row items-center bg-primary-green text-primary-black outline-none pl-6 pr-4 py-2 font-poppins font-medium text-sm rounded-lg transition-all hover:py-3 hover:pl-7 hover:pr-5">
+              <Popover.Button className="flex flex-row items-center bg-primary-green text-primary-black border border-primary-green outline-none px-6 py-2 hover:px-[1.625rem] hover:py-[0.625rem] font-poppins font-medium text-sm rounded-lg transition-all">
                 <span>{formatAddress(account, 4)}</span>
                 <ChevronDownIcon
                   className="ml-2 h-5 w-5 text-primary-black transition duration-150 ease-in-out group-hover:text-opacity-80 hover:rotate-180"
@@ -109,7 +109,7 @@ const Connect = () => {
       ) : (
         <button
           onClick={onClickConnect}
-          className="bg-primary-green text-primary-black outline-none px-6 py-2 font-poppins font-medium text-sm rounded-lg transition-all hover:py-3 hover:px-7"
+          className="bg-primary-black text-primary-green hover:bg-primary-green hover:text-primary-black border border-primary-green outline-none px-6 py-2 hover:px-[1.625rem] hover:py-[0.625rem] font-poppins font-medium text-sm rounded-lg transition-all"
         >
           Connect Wallet
         </button>
