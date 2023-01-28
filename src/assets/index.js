@@ -1,3 +1,3 @@
-import mantleLogo from "./MantleLogo.png";
+import mantleBackground from "./mantleBackground.webp";
 
-export { mantleLogo };
+export { mantleBackground };

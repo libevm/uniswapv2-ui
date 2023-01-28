@@ -54,7 +54,7 @@ export const formatAddress = (value, length = 4) => {
 };
 
 export const injected = new InjectedConnector({
-  supportedChainIds: [5001],
+  supportedChainIds: [5001, 1, 5],
 });
 
 const Web3ProviderCore = (props) => {
