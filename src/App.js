@@ -18,15 +18,21 @@ const App = () => {
     <Web3ReactProvider getLibrary={getLibrary}>
       <SnackbarProvider maxSnack={3}>
         <Web3ProviderCore
-          render={(network) => (
+          render={(network, setupConnection) => (
             <div>
               <NarBar />
 
               <Route exact path="/">
-                <CoinSwapper network={network} />
+                <CoinSwapper
+                  network={network}
+                  setupConnection={setupConnection}
+                />
               </Route>
               <Route exact path="/liquidity">
-                <Liquidity network={network} />
+                <Liquidity
+                  network={network}
+                  setupConnection={setupConnection}
+                />
               </Route>
             </div>
           )}

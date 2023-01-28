@@ -5,16 +5,17 @@ import {
   getBalanceAndSymbol,
   swapTokens,
   getReserves,
-  getNetwork,
-  getProvider,
 } from "../ethereumFunctions";
 import CoinField from "./CoinField";
 import CoinDialog from "./CoinDialog";
 import Balance from "../Components/Balance";
 import LoadingButton from "../Components/LoadingButton";
 import WrongNetwork from "../Components/WrongNetwork";
+import { useWeb3React } from "@web3-react/core";
 
 function CoinSwapper(props) {
+  const { account, chainId } = useWeb3React();
+
   const { enqueueSnackbar } = useSnackbar();
 
   // Stores a record of whether their respective dialog window is open
@@ -171,17 +172,13 @@ function CoinSwapper(props) {
   };
 
   useEffect(() => {
-    const fetchNetwork = async () => {
-      const net = await getNetwork(getProvider());
-      if (net === 5001) {
-        setwrongNetworkOpen(false);
-      } else {
-        setwrongNetworkOpen(true);
-      }
-    };
-
-    fetchNetwork();
-  }, []);
+    if (account && chainId === 5001) {
+      props.setupConnection();
+      setwrongNetworkOpen(false);
+    } else {
+      setwrongNetworkOpen(true);
+    }
+  }, [account, chainId]);
 
   // The lambdas within these useEffects will be called when a particular dependency is updated. These dependencies
   // are defined in the array of variables passed to the function after the lambda expression. If there are no dependencies

@@ -14,8 +14,10 @@ import {
 import CoinDialog from "../CoinSwapper/CoinDialog";
 import LoadingButton from "../Components/LoadingButton";
 import WrongNetwork from "../Components/WrongNetwork";
+import { useWeb3React } from "@web3-react/core";
 
 function LiquidityRemover(props) {
+  const { account, chainId } = useWeb3React();
   const { enqueueSnackbar } = useSnackbar();
 
   // Stores a record of whether their respective dialog window is open
@@ -181,18 +183,13 @@ function LiquidityRemover(props) {
   };
 
   useEffect(() => {
-    const fetchNetwork = async () => {
-      const net = await getNetwork(getProvider());
-      console.log(net);
-      if (net === 5001) {
-        setwrongNetworkOpen(false);
-      } else {
-        setwrongNetworkOpen(true);
-      }
-    };
-
-    fetchNetwork();
-  }, []);
+    if (account && chainId === 5001) {
+      props.setupConnection();
+      setwrongNetworkOpen(false);
+    } else {
+      setwrongNetworkOpen(true);
+    }
+  }, [account, chainId]);
 
   // This hook is called when either of the state variables `coin1.address` or `coin2.address` change.
   // This means that when the user selects a different coin to convert between, or the coins are swapped,

@@ -9,9 +9,19 @@ function Liquidity(props) {
 
   const deploy_or_remove = (deploy) => {
     if (deploy === true) {
-      return <LiquidityDeployer network={props.network} />;
+      return (
+        <LiquidityDeployer
+          network={props.network}
+          setupConnection={props.setupConnection}
+        />
+      );
     }
-    return <LiquidityRemover network={props.network} />;
+    return (
+      <LiquidityRemover
+        network={props.network}
+        setupConnection={props.setupConnection}
+      />
+    );
   };
 
   return (
