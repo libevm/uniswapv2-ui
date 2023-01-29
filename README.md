@@ -1,4 +1,4 @@
-#Mantle Swap
+# Mantle Swap
 
 This is an alternative interface to Uniswap V2 contracts deployed on an EVM blockchain modified to be used on mantle testnet. We used ReactJS for the project, with the EthersJS module to connect to the blockchain via metamask in the browser, and TailwindCSS for the frontend. Hosted with Vercel.
 
