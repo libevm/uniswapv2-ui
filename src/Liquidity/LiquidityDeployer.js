@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import { Transition } from "@headlessui/react";
-import { useSnackbar } from "notistack";
 import { useWeb3React } from "@web3-react/core";
 
 import { getBalanceAndSymbol, getReserves } from "../ethereumFunctions";
@@ -16,7 +15,6 @@ import Loader from "../Components/Loader";
 
 function LiquidityDeployer(props) {
   const { account, chainId } = useWeb3React();
-  const { enqueueSnackbar } = useSnackbar();
 
   // Stores a record of whether their respective dialog window is open
   const [dialog1Open, setDialog1Open] = useState(false);
@@ -128,14 +126,9 @@ function LiquidityDeployer(props) {
         // If the transaction was successful, we clear to input to make sure the user doesn't accidental redo the transfer
         setField1Value("");
         setField2Value("");
-        enqueueSnackbar("Deployment Successful", { variant: "success" });
       })
       .catch((e) => {
         setLoading(false);
-        enqueueSnackbar("Deployment Failed (" + e.message + ")", {
-          variant: "error",
-          autoHideDuration: 10000,
-        });
       });
   };
 

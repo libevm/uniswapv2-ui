@@ -3,7 +3,6 @@ import Web3ProviderCore from "./network";
 import NarBar from "./NavBar/NavBar";
 import CoinSwapper from "./CoinSwapper/CoinSwapper";
 import { Route } from "react-router-dom";
-import { SnackbarProvider } from "notistack";
 import Liquidity from "./Liquidity/Liquidity";
 import { Web3ReactProvider } from "@web3-react/core";
 import { Web3Provider } from "@ethersproject/providers";
@@ -16,28 +15,23 @@ const getLibrary = (provider) => {
 const App = () => {
   return (
     <Web3ReactProvider getLibrary={getLibrary}>
-      <SnackbarProvider maxSnack={3}>
-        <Web3ProviderCore
-          render={(network, setupConnection) => (
-            <div>
-              <NarBar />
+      <Web3ProviderCore
+        render={(network, setupConnection) => (
+          <div>
+            <NarBar />
 
-              <Route exact path="/">
-                <CoinSwapper
-                  network={network}
-                  setupConnection={setupConnection}
-                />
-              </Route>
-              <Route exact path="/liquidity">
-                <Liquidity
-                  network={network}
-                  setupConnection={setupConnection}
-                />
-              </Route>
-            </div>
-          )}
-        ></Web3ProviderCore>
-      </SnackbarProvider>
+            <Route exact path="/">
+              <CoinSwapper
+                network={network}
+                setupConnection={setupConnection}
+              />
+            </Route>
+            <Route exact path="/liquidity">
+              <Liquidity network={network} setupConnection={setupConnection} />
+            </Route>
+          </div>
+        )}
+      ></Web3ProviderCore>
     </Web3ReactProvider>
   );
 };
