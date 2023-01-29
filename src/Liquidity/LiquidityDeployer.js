@@ -1,12 +1,8 @@
 import { useState, useEffect } from "react";
 import { useSnackbar } from "notistack";
-import {
-  getBalanceAndSymbol,
-  getReserves,
-  getNetwork,
-  getProvider,
-} from "../ethereumFunctions";
+import { useWeb3React } from "@web3-react/core";
 
+import { getBalanceAndSymbol, getReserves } from "../ethereumFunctions";
 import { addLiquidity, quoteAddLiquidity } from "./LiquidityFunctions";
 
 import CoinField from "../CoinSwapper/CoinField";
@@ -15,7 +11,7 @@ import Balance from "../Components/Balance";
 import Reserve from "../Components/Reserve";
 import LoadingButton from "../Components/LoadingButton";
 import WrongNetwork from "../Components/WrongNetwork";
-import { useWeb3React } from "@web3-react/core";
+import Loader from "../Components/Loader";
 
 function LiquidityDeployer(props) {
   const { account, chainId } = useWeb3React();
@@ -47,6 +43,8 @@ function LiquidityDeployer(props) {
 
   // Controls the loading button
   const [loading, setLoading] = useState(false);
+  const [showReserveLoader, setShowReserveLoader] = useState(false);
+  const [showLiquidityLoader, setShowLiquidityLoader] = useState(false);
 
   // Stores the user's balance of liquidity tokens for the current pair
   const [liquidityTokens, setLiquidityTokens] = useState("");
@@ -210,11 +208,8 @@ function LiquidityDeployer(props) {
   // This means that when the user selects a different coin to convert between, or the coins are swapped,
   // the new reserves will be calculated.
   useEffect(() => {
-    console.log(
-      "Trying to get reserves between:\n" + coin1.address + "\n" + coin2.address
-    );
-
     if (coin1.address && coin2.address && props.network.account) {
+      setShowReserveLoader(true);
       getReserves(
         coin1.address,
         coin2.address,
@@ -224,6 +219,7 @@ function LiquidityDeployer(props) {
       ).then((data) => {
         setReserves([data[0], data[1]]);
         setLiquidityTokens(data[2]);
+        setShowReserveLoader(false);
       });
     }
   }, [
@@ -238,8 +234,7 @@ function LiquidityDeployer(props) {
   // It will give a preview of the liquidity deployment.
   useEffect(() => {
     if (isButtonEnabled()) {
-      console.log("Trying to preview the liquidity deployment");
-
+      setShowLiquidityLoader(true);
       quoteAddLiquidity(
         coin1.address,
         coin2.address,
@@ -248,11 +243,8 @@ function LiquidityDeployer(props) {
         props.network.factory,
         props.network.signer
       ).then((data) => {
-        // console.log(data);
-        console.log("TokenA in: ", data[0]);
-        console.log("TokenB in: ", data[1]);
-        console.log("Liquidity out: ", data[2]);
         setLiquidityOut([data[0], data[1], data[2]]);
+        setShowLiquidityLoader(false);
       });
     }
   }, [
@@ -271,6 +263,7 @@ function LiquidityDeployer(props) {
       console.log("Checking balances & Getting reserves...");
 
       if (coin1.address && coin2.address && props.network.account) {
+        setShowReserveLoader(true);
         getReserves(
           coin1.address,
           coin2.address,
@@ -280,6 +273,7 @@ function LiquidityDeployer(props) {
         ).then((data) => {
           setReserves([data[0], data[1]]);
           setLiquidityTokens(data[2]);
+          setShowReserveLoader(false);
         });
       }
 
@@ -384,44 +378,64 @@ function LiquidityDeployer(props) {
                   </div>
 
                   <div className="mt-4 mb-6">
-                    <h3 className="text-center text-white font-semibold text-xl">
+                    <h3 className="text-center text-white font-semibold text-xl mb-2">
                       Reserves
                     </h3>
                     <div className="flex flex-col">
-                      <Reserve
-                        reserve={reserves[0]}
-                        symbol={coin1.symbol}
-                        format={formatReserve}
-                      />
-                      <Reserve
-                        reserve={reserves[1]}
-                        symbol={coin2.symbol}
-                        format={formatReserve}
-                      />
+                      {showReserveLoader ? (
+                        <div className="mx-auto">
+                          <Loader></Loader>
+                        </div>
+                      ) : (
+                        <>
+                          <Reserve
+                            reserve={reserves[0]}
+                            symbol={coin1.symbol}
+                            format={formatReserve}
+                          />
+                          <Reserve
+                            reserve={reserves[1]}
+                            symbol={coin2.symbol}
+                            format={formatReserve}
+                          />
+                        </>
+                      )}
                     </div>
                   </div>
 
                   <div className="relative min-w-full max-w-full p-[2px] rounded-3xl mb-4">
                     <div className="w-full bg-primary-black backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
                       <div className="flex flex-col">
-                        <h6 className="font-bold text-lg text-center">
+                        <h6 className="font-bold text-lg text-center mb-2">
                           Tokens In
                         </h6>
                         <div className="mx-auto">
-                          <div>
-                            {formatBalance(liquidityOut[0], coin1.symbol)}
-                          </div>
-                          <div>
-                            {formatBalance(liquidityOut[1], coin2.symbol)}
-                          </div>
+                          {showLiquidityLoader ? (
+                            <Loader></Loader>
+                          ) : (
+                            <>
+                              <div className="text-sm">
+                                {formatBalance(liquidityOut[0], coin1.symbol)}
+                              </div>
+                              <div className="text-sm">
+                                {formatBalance(liquidityOut[1], coin2.symbol)}
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
                       <div className="flex flex-col">
-                        <h6 className="font-bold text-lg text-center">
+                        <h6 className="font-bold text-lg text-center mb-2">
                           Tokens Out
                         </h6>
                         <div className="mx-auto">
-                          {formatBalance(liquidityOut[2], "UNI-V2")}
+                          {showLiquidityLoader ? (
+                            <Loader></Loader>
+                          ) : (
+                            <span className="text-sm">
+                              {formatBalance(liquidityOut[2], "UNI-V2")}
+                            </span>
+                          )}
                         </div>
                       </div>
                     </div>

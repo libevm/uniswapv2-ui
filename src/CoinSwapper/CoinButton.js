@@ -1,6 +1,7 @@
 import PropTypes from "prop-types";
 import { useEffect, useState } from "react";
 import { getBalanceAndSymbol } from "../ethereumFunctions";
+import Loader from "../Components/Loader";
 
 CoinButton.propTypes = {
   coinName: PropTypes.string.isRequired,
@@ -23,8 +24,10 @@ export default function CoinButton(props) {
   } = props;
 
   const [coinBalance, setCoinBalance] = useState();
+  const [showLoader, setShowLoader] = useState(false);
 
   useEffect(() => {
+    setShowLoader(true);
     getBalanceAndSymbol(
       accountAddress,
       address,
@@ -34,8 +37,9 @@ export default function CoinButton(props) {
       coins
     ).then((data) => {
       setCoinBalance(data.balance);
+      setShowLoader(false);
     });
-  });
+  }, []);
 
   const formatBalance = (balance) => {
     if (balance) {
@@ -52,7 +56,10 @@ export default function CoinButton(props) {
         {coinLogo ? (
           <img src={coinLogo} alt="" className="h-10 w-10 rounded-full mr-4" />
         ) : (
-          <img className="h-10 w-10 rounded-full mr-4 bg-primary-black" />
+          <img
+            alt=""
+            className="h-10 w-10 rounded-full mr-4 bg-primary-black"
+          />
         )}
 
         <div className="flex flex-col">
@@ -64,9 +71,13 @@ export default function CoinButton(props) {
           </div>
         </div>
       </div>
-      <div className="text-white">
-        {coinBalance ? formatBalance(coinBalance) : "0.0"}
-      </div>
+      {showLoader ? (
+        <Loader></Loader>
+      ) : (
+        <div className="text-white">
+          {coinBalance ? formatBalance(coinBalance) : "0.0"}
+        </div>
+      )}
     </button>
   );
 }

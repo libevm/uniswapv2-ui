@@ -1,11 +1,6 @@
 import { useEffect, useState } from "react";
 import { useSnackbar } from "notistack";
-import {
-  getBalanceAndSymbol,
-  getReserves,
-  getNetwork,
-  getProvider,
-} from "../ethereumFunctions";
+import { getBalanceAndSymbol, getReserves } from "../ethereumFunctions";
 import { removeLiquidity, quoteRemoveLiquidity } from "./LiquidityFunctions";
 import {
   RemoveLiquidityField1,
@@ -15,6 +10,7 @@ import CoinDialog from "../CoinSwapper/CoinDialog";
 import LoadingButton from "../Components/LoadingButton";
 import WrongNetwork from "../Components/WrongNetwork";
 import { useWeb3React } from "@web3-react/core";
+import Loader from "../Components/Loader";
 
 function LiquidityRemover(props) {
   const { account, chainId } = useWeb3React();
@@ -45,6 +41,8 @@ function LiquidityRemover(props) {
 
   // Controls the loading button
   const [loading, setLoading] = useState(false);
+  const [showLiquidityLoader, setShowLiquidityLoader] = useState(false);
+  const [showLPTokensLoader, setShowLPTokensLoader] = useState(false);
 
   // Stores the liquidity tokens balance of the user
   const [liquidityTokens, setLiquidityTokens] = useState("");
@@ -195,11 +193,8 @@ function LiquidityRemover(props) {
   // This means that when the user selects a different coin to convert between, or the coins are swapped,
   // the new reserves will be calculated.
   useEffect(() => {
-    console.log(
-      "Trying to get reserves between:\n" + coin1.address + "\n" + coin2.address
-    );
-
     if (coin1.address && coin2.address && props.network.account) {
+      setShowLPTokensLoader(true);
       getReserves(
         coin1.address,
         coin2.address,
@@ -209,6 +204,7 @@ function LiquidityRemover(props) {
       ).then((data) => {
         setReserves([data[0], data[1]]);
         setLiquidityTokens(data[2]);
+        setShowLPTokensLoader(false);
       });
     }
   }, [
@@ -223,7 +219,7 @@ function LiquidityRemover(props) {
   // It will give a preview of the liquidity removal.
   useEffect(() => {
     if (isButtonEnabled()) {
-      console.log("Trying to preview the liquidity removal");
+      setShowLiquidityLoader(true);
       quoteRemoveLiquidity(
         coin1.address,
         coin2.address,
@@ -232,6 +228,7 @@ function LiquidityRemover(props) {
         props.network.signer
       ).then((data) => {
         setTokensOut(data);
+        setShowLiquidityLoader(false);
       });
     }
   }, [
@@ -247,9 +244,8 @@ function LiquidityRemover(props) {
     // updated has changed. This allows them to see when a transaction completes by looking at the balance output.
 
     const coinTimeout = setTimeout(() => {
-      console.log("Checking balances & Getting reserves...");
-
       if (coin1.address && coin2.address && props.network.account) {
+        setShowLPTokensLoader(true);
         getReserves(
           coin1.address,
           coin2.address,
@@ -259,6 +255,7 @@ function LiquidityRemover(props) {
         ).then((data) => {
           setReserves([data[0], data[1]]);
           setLiquidityTokens(data[2]);
+          setShowLPTokensLoader(false);
         });
       }
 
@@ -350,13 +347,17 @@ function LiquidityRemover(props) {
                     />
                   </div>
 
-                  <div className="mt-4 mb-6">
-                    <h3 className="text-center text-white font-semibold text-lg">
+                  <div className="mt-4 mb-4">
+                    <h3 className="text-center text-white font-semibold text-lg mb-2">
                       LP-Token Balance
                     </h3>
                     <div className="flex justify-center items-center w-full">
                       <p className="font-poppins font-normal text-white">
-                        {formatReserve(liquidityTokens, "UNI-V2")}
+                        {showLPTokensLoader ? (
+                          <Loader></Loader>
+                        ) : (
+                          formatReserve(liquidityTokens, "UNI-V2")
+                        )}
                       </p>
                     </div>
                   </div>
@@ -364,22 +365,36 @@ function LiquidityRemover(props) {
                   <div className="relative min-w-full max-w-full p-[2px] rounded-3xl mb-4">
                     <div className="w-full bg-primary-black backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
                       <div className="flex flex-col">
-                        <h6 className="font-bold text-lg text-center">
+                        <h6 className="font-bold text-lg text-center mb-2">
                           Tokens In
                         </h6>
                         <div className="mx-auto">
-                          {formatBalance(tokensOut[0], "UNI-V2")}
+                          {showLiquidityLoader ? (
+                            <Loader></Loader>
+                          ) : (
+                            <span className="text-sm">
+                              {formatBalance(tokensOut[0], "UNI-V2")}
+                            </span>
+                          )}
                         </div>
                       </div>
                       <div className="flex flex-col">
-                        <h6 className="font-bold text-lg text-center">
+                        <h6 className="font-bold text-lg text-center mb-2">
                           Tokens Out
                         </h6>
                         <div className="mx-auto">
-                          {formatBalance(tokensOut[1], coin1.symbol)}
-                        </div>
-                        <div className="mx-auto">
-                          {formatBalance(tokensOut[2], coin2.symbol)}
+                          {showLiquidityLoader ? (
+                            <Loader></Loader>
+                          ) : (
+                            <>
+                              <div className="text-sm">
+                                {formatBalance(tokensOut[1], coin1.symbol)}
+                              </div>
+                              <div className="text-sm">
+                                {formatBalance(tokensOut[2], coin2.symbol)}
+                              </div>
+                            </>
+                          )}
                         </div>
                       </div>
                     </div>
