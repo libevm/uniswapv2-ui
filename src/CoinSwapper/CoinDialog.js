@@ -1,7 +1,7 @@
 import { Fragment, useState } from "react";
 import { Dialog, Transition } from "@headlessui/react";
 import CoinButton from "./CoinButton";
-import { doesTokenExist, getBalanceAndSymbol } from "../ethereumFunctions";
+import { doesTokenExist } from "../ethereumFunctions";
 import PropTypes from "prop-types";
 
 CoinDialog.propTypes = {
@@ -129,6 +129,7 @@ export default function CoinDialog(props) {
                       <CoinButton
                         coinName={coin.name}
                         coinAbbr={coin.abbr}
+                        coinLogo={coin.logo}
                         onClick={() => exit(coin.address)}
                         accountAddress={accountAddress}
                         address={coin.address}
