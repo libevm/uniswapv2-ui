@@ -1,4 +1,4 @@
-import React from "react";
+import Loader from "./Loader";
 
 export default function LoadingButton(props) {
   const { children, loading, valid, onClick } = props;
@@ -13,7 +13,7 @@ export default function LoadingButton(props) {
             : "text-primary-green bg-primary-black"
         } "border-none outline-none px-16 py-2 font-poppins font-semibold text-medium rounded-2xl leading-[24px] transition-all min-h-[56px]"`}
       >
-        {children}
+        {loading ? <Loader></Loader> : children}
       </button>
     </div>
   );
