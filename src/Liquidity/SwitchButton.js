@@ -6,7 +6,7 @@ export default function SwitchButton(props) {
   const [deployPage, setDeployPage] = useState(true);
 
   return (
-    <div className="mt-8 inline-flex rounded-md shadow-sm" role="group">
+    <div className="inline-flex rounded-md shadow-sm" role="group">
       <button
         type="button"
         className={`"bg-primary-black text-primary-green border border-primary-green rounded-l-lg px-8 py-2 text-md font-medium " ${
