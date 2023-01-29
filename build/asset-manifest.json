@@ -1,25 +1,20 @@
 {
   "files": {
-    "main.css": "/static/css/main.797d0e06.chunk.css",
-    "main.js": "/static/js/main.e4322116.chunk.js",
-    "main.js.map": "/static/js/main.e4322116.chunk.js.map",
-    "runtime-main.js": "/static/js/runtime-main.e094011c.js",
-    "runtime-main.js.map": "/static/js/runtime-main.e094011c.js.map",
-    "static/css/2.3ab4f688.chunk.css": "/static/css/2.3ab4f688.chunk.css",
-    "static/js/2.b3792c3f.chunk.js": "/static/js/2.b3792c3f.chunk.js",
-    "static/js/2.b3792c3f.chunk.js.map": "/static/js/2.b3792c3f.chunk.js.map",
-    "static/js/3.c38e175b.chunk.js": "/static/js/3.c38e175b.chunk.js",
-    "static/js/3.c38e175b.chunk.js.map": "/static/js/3.c38e175b.chunk.js.map",
+    "main.css": "/static/css/main.5ab59687.css",
+    "main.js": "/static/js/main.f48a5a44.js",
+    "static/js/787.6b1a131c.chunk.js": "/static/js/787.6b1a131c.chunk.js",
+    "static/media/chainlink.png": "/static/media/chainlink.a36a2e78560b7adb1d33.png",
+    "static/media/uniswap.png": "/static/media/uniswap.6afdda179c5890221056.png",
+    "static/media/mantleBackground.webp": "/static/media/mantleBackground.366f29202eaf2c74529f.webp",
+    "static/media/weth.png": "/static/media/weth.b380c61667bc56d1de8b.png",
+    "static/media/wbtc.png": "/static/media/wbtc.299350c01b4fe5d01bae.png",
     "index.html": "/index.html",
-    "static/css/2.3ab4f688.chunk.css.map": "/static/css/2.3ab4f688.chunk.css.map",
-    "static/css/main.797d0e06.chunk.css.map": "/static/css/main.797d0e06.chunk.css.map",
-    "static/js/2.b3792c3f.chunk.js.LICENSE.txt": "/static/js/2.b3792c3f.chunk.js.LICENSE.txt"
+    "main.5ab59687.css.map": "/static/css/main.5ab59687.css.map",
+    "main.f48a5a44.js.map": "/static/js/main.f48a5a44.js.map",
+    "787.6b1a131c.chunk.js.map": "/static/js/787.6b1a131c.chunk.js.map"
   },
   "entrypoints": [
-    "static/js/runtime-main.e094011c.js",
-    "static/css/2.3ab4f688.chunk.css",
-    "static/js/2.b3792c3f.chunk.js",
-    "static/css/main.797d0e06.chunk.css",
-    "static/js/main.e4322116.chunk.js"
+    "static/css/main.5ab59687.css",
+    "static/js/main.f48a5a44.js"
   ]
 }
