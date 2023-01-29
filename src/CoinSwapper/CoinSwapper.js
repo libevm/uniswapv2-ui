@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Transition } from "@headlessui/react";
 import { useSnackbar } from "notistack";
 import {
   getAmountOut,
@@ -22,6 +23,7 @@ function CoinSwapper(props) {
   const [dialog1Open, setDialog1Open] = useState(false);
   const [dialog2Open, setDialog2Open] = useState(false);
   const [wrongNetworkOpen, setwrongNetworkOpen] = useState(false);
+  const [showTransition, setShowTransition] = useState(false);
 
   // Stores data about their respective coin
   const [coin1, setCoin1] = useState({
@@ -172,6 +174,10 @@ function CoinSwapper(props) {
   };
 
   useEffect(() => {
+    setShowTransition(true);
+  }, []);
+
+  useEffect(() => {
     if (account && chainId === 5001) {
       props.setupConnection();
       setwrongNetworkOpen(false);
@@ -179,12 +185,6 @@ function CoinSwapper(props) {
       setwrongNetworkOpen(true);
     }
   }, [account, chainId]);
-
-  // The lambdas within these useEffects will be called when a particular dependency is updated. These dependencies
-  // are defined in the array of variables passed to the function after the lambda expression. If there are no dependencies
-  // the lambda will only ever be called when the component mounts. These are very useful for calculating new values
-  // after a particular state change, for example, calculating the new exchange rate whenever the addresses
-  // of the two coins change.
 
   // This hook is called when either of the state variables `coin1.address` or `coin2.address` change.
   // This means that when the user selects a different coin to convert between, or the coins are swapped,
@@ -320,67 +320,78 @@ function CoinSwapper(props) {
                 {wrongNetworkOpen ? (
                   <WrongNetwork></WrongNetwork>
                 ) : (
-                  <div>
+                  <Transition
+                    appear={true}
+                    show={showTransition}
+                    enter="transition ease-out duration-500"
+                    enterFrom="opacity-0 translate-y-2"
+                    enterTo="opacity-100 translate-y-0"
+                    leave="transition ease-in duration-500"
+                    leaveFrom="opacity-100 translate-y-0"
+                    leaveTo="opacity-0 translate-y-1"
+                  >
                     <div>
-                      <CoinField
-                        activeField={true}
-                        value={field1Value}
-                        onClick={() => setDialog1Open(true)}
-                        onChange={handleChange.field1}
-                        symbol={
-                          coin1.symbol !== undefined ? coin1.symbol : "Select"
-                        }
-                      />
-                      <Balance
-                        balance={coin1.balance}
-                        symbol={coin1.symbol}
-                        format={formatBalance}
-                      />
-                    </div>
-                    <button
-                      className="flex items-center justify-center p-2 mx-auto"
-                      onClick={switchFields}
-                    >
-                      <svg
-                        aria-hidden="true"
-                        focusable="false"
-                        data-prefix="fas"
-                        data-icon="arrow-down"
-                        role="img"
-                        xmlns="http://www.w3.org/2000/svg"
-                        viewBox="0 0 384 512"
-                        className="text-primary-green h-4"
+                      <div>
+                        <CoinField
+                          activeField={true}
+                          value={field1Value}
+                          onClick={() => setDialog1Open(true)}
+                          onChange={handleChange.field1}
+                          symbol={
+                            coin1.symbol !== undefined ? coin1.symbol : "Select"
+                          }
+                        />
+                        <Balance
+                          balance={coin1.balance}
+                          symbol={coin1.symbol}
+                          format={formatBalance}
+                        />
+                      </div>
+                      <button
+                        className="flex items-center justify-center p-2 mx-auto"
+                        onClick={switchFields}
                       >
-                        <path
-                          fill="currentColor"
-                          d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"
-                        ></path>
-                      </svg>
-                    </button>
+                        <svg
+                          aria-hidden="true"
+                          focusable="false"
+                          data-prefix="fas"
+                          data-icon="arrow-down"
+                          role="img"
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 384 512"
+                          className="text-primary-green h-4"
+                        >
+                          <path
+                            fill="currentColor"
+                            d="M169.4 470.6c12.5 12.5 32.8 12.5 45.3 0l160-160c12.5-12.5 12.5-32.8 0-45.3s-32.8-12.5-45.3 0L224 370.8 224 64c0-17.7-14.3-32-32-32s-32 14.3-32 32l0 306.7L54.6 265.4c-12.5-12.5-32.8-12.5-45.3 0s-12.5 32.8 0 45.3l160 160z"
+                          ></path>
+                        </svg>
+                      </button>
 
-                    <div className="mb-6 w-[100%]">
-                      <CoinField
-                        activeField={false}
-                        value={field2Value}
-                        onClick={() => setDialog2Open(true)}
-                        symbol={
-                          coin2.symbol !== undefined ? coin2.symbol : "Select"
-                        }
-                      />
-                      <Balance
-                        balance={coin2.balance}
-                        symbol={coin2.symbol}
-                        format={formatBalance}
-                      />
+                      <div className="mb-6 w-[100%]">
+                        <CoinField
+                          activeField={false}
+                          value={field2Value}
+                          onClick={() => setDialog2Open(true)}
+                          symbol={
+                            coin2.symbol !== undefined ? coin2.symbol : "Select"
+                          }
+                        />
+                        <Balance
+                          balance={coin2.balance}
+                          symbol={coin2.symbol}
+                          format={formatBalance}
+                        />
+                      </div>
+                      <LoadingButton
+                        loading={loading}
+                        valid={isButtonEnabled()}
+                        onClick={swap}
+                      >
+                        Swap
+                      </LoadingButton>
                     </div>
-                    <LoadingButton
-                      loading={loading}
-                      valid={isButtonEnabled()}
-                      onClick={swap}
-                    >
-                      Swap
-                    </LoadingButton>
-                  </div>
+                  </Transition>
                 )}
               </div>
             </div>

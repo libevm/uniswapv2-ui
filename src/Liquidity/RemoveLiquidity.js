@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Transition } from "@headlessui/react";
 import { useSnackbar } from "notistack";
 import { getBalanceAndSymbol, getReserves } from "../ethereumFunctions";
 import { removeLiquidity, quoteRemoveLiquidity } from "./LiquidityFunctions";
@@ -20,6 +21,7 @@ function LiquidityRemover(props) {
   const [dialog1Open, setDialog1Open] = useState(false);
   const [dialog2Open, setDialog2Open] = useState(false);
   const [wrongNetworkOpen, setwrongNetworkOpen] = useState(false);
+  const [showTransition, setShowTransition] = useState(false);
 
   // Stores data about their respective coin
   const [coin1, setCoin1] = useState({
@@ -181,6 +183,10 @@ function LiquidityRemover(props) {
   };
 
   useEffect(() => {
+    setShowTransition(true);
+  }, []);
+
+  useEffect(() => {
     if (account && chainId === 5001) {
       props.setupConnection();
       setwrongNetworkOpen(false);
@@ -325,91 +331,102 @@ function LiquidityRemover(props) {
               {wrongNetworkOpen ? (
                 <WrongNetwork></WrongNetwork>
               ) : (
-                <div>
-                  <div className="mb-4">
-                    <RemoveLiquidityField1
-                      activeField={true}
-                      onClick1={() => setDialog1Open(true)}
-                      onClick2={() => setDialog2Open(true)}
-                      symbol1={
-                        coin1.symbol !== undefined ? coin1.symbol : "Select"
-                      }
-                      symbol2={
-                        coin2.symbol !== undefined ? coin2.symbol : "Select"
-                      }
-                    />
-                  </div>
-                  <div className="mb-2 w-[100%]">
-                    <RemoveLiquidityField2
-                      activeField={true}
-                      value={field1Value}
-                      onChange={handleChange.field1}
-                    />
-                  </div>
-
-                  <div className="mt-4 mb-4">
-                    <h3 className="text-center text-white font-semibold text-lg mb-2">
-                      LP-Token Balance
-                    </h3>
-                    <div className="flex justify-center items-center w-full">
-                      <p className="font-poppins font-normal text-white">
-                        {showLPTokensLoader ? (
-                          <Loader></Loader>
-                        ) : (
-                          formatReserve(liquidityTokens, "UNI-V2")
-                        )}
-                      </p>
+                <Transition
+                  appear={true}
+                  show={showTransition}
+                  enter="transition ease-out duration-500"
+                  enterFrom="opacity-0 translate-y-2"
+                  enterTo="opacity-100 translate-y-0"
+                  leave="transition ease-in duration-500"
+                  leaveFrom="opacity-100 translate-y-0"
+                  leaveTo="opacity-0 translate-y-1"
+                >
+                  <div>
+                    <div className="mb-4">
+                      <RemoveLiquidityField1
+                        activeField={true}
+                        onClick1={() => setDialog1Open(true)}
+                        onClick2={() => setDialog2Open(true)}
+                        symbol1={
+                          coin1.symbol !== undefined ? coin1.symbol : "Select"
+                        }
+                        symbol2={
+                          coin2.symbol !== undefined ? coin2.symbol : "Select"
+                        }
+                      />
                     </div>
-                  </div>
+                    <div className="mb-2 w-[100%]">
+                      <RemoveLiquidityField2
+                        activeField={true}
+                        value={field1Value}
+                        onChange={handleChange.field1}
+                      />
+                    </div>
 
-                  <div className="relative min-w-full max-w-full p-[2px] rounded-3xl mb-4">
-                    <div className="w-full bg-primary-black backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
-                      <div className="flex flex-col">
-                        <h6 className="font-bold text-lg text-center mb-2">
-                          Tokens In
-                        </h6>
-                        <div className="mx-auto">
-                          {showLiquidityLoader ? (
+                    <div className="mt-4 mb-4">
+                      <h3 className="text-center text-white font-semibold text-lg mb-2">
+                        LP-Token Balance
+                      </h3>
+                      <div className="flex justify-center items-center w-full">
+                        <p className="font-poppins font-normal text-white">
+                          {showLPTokensLoader ? (
                             <Loader></Loader>
                           ) : (
-                            <span className="text-sm">
-                              {formatBalance(tokensOut[0], "UNI-V2")}
-                            </span>
+                            formatReserve(liquidityTokens, "UNI-V2")
                           )}
-                        </div>
+                        </p>
                       </div>
-                      <div className="flex flex-col">
-                        <h6 className="font-bold text-lg text-center mb-2">
-                          Tokens Out
-                        </h6>
-                        <div className="mx-auto">
-                          {showLiquidityLoader ? (
-                            <Loader></Loader>
-                          ) : (
-                            <>
-                              <div className="text-sm">
-                                {formatBalance(tokensOut[1], coin1.symbol)}
-                              </div>
-                              <div className="text-sm">
-                                {formatBalance(tokensOut[2], coin2.symbol)}
-                              </div>
-                            </>
-                          )}
+                    </div>
+
+                    <div className="relative min-w-full max-w-full p-[2px] rounded-3xl mb-4">
+                      <div className="w-full bg-primary-black backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
+                        <div className="flex flex-col">
+                          <h6 className="font-bold text-lg text-center mb-2">
+                            Tokens In
+                          </h6>
+                          <div className="mx-auto">
+                            {showLiquidityLoader ? (
+                              <Loader></Loader>
+                            ) : (
+                              <span className="text-sm">
+                                {formatBalance(tokensOut[0], "UNI-V2")}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex flex-col">
+                          <h6 className="font-bold text-lg text-center mb-2">
+                            Tokens Out
+                          </h6>
+                          <div className="mx-auto">
+                            {showLiquidityLoader ? (
+                              <Loader></Loader>
+                            ) : (
+                              <>
+                                <div className="text-sm">
+                                  {formatBalance(tokensOut[1], coin1.symbol)}
+                                </div>
+                                <div className="text-sm">
+                                  {formatBalance(tokensOut[2], coin2.symbol)}
+                                </div>
+                              </>
+                            )}
+                          </div>
                         </div>
                       </div>
                     </div>
-                  </div>
 
-                  <LoadingButton
-                    loading={loading}
-                    valid={isButtonEnabled()}
-                    success={false}
-                    fail={false}
-                    onClick={remove}
-                  >
-                    Remove
-                  </LoadingButton>
-                </div>
+                    <LoadingButton
+                      loading={loading}
+                      valid={isButtonEnabled()}
+                      success={false}
+                      fail={false}
+                      onClick={remove}
+                    >
+                      Remove
+                    </LoadingButton>
+                  </div>
+                </Transition>
               )}
             </div>
           </div>
