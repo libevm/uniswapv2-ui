@@ -12,9 +12,16 @@ import Balance from "../Components/Balance";
 import LoadingButton from "../Components/LoadingButton";
 import WrongNetwork from "../Components/WrongNetwork";
 import { useWeb3React } from "@web3-react/core";
+import toast, { Toaster } from "react-hot-toast";
 
 function CoinSwapper(props) {
   const { account, chainId } = useWeb3React();
+
+  const notify = () => toast("Transaction Pending...");
+  const notifyError = () =>
+    toast("Transaction Failed...", {
+      className: "border border-red-500",
+    });
 
   // Stores a record of whether their respective dialog window is open
   const [dialog1Open, setDialog1Open] = useState(false);
@@ -155,12 +162,13 @@ function CoinSwapper(props) {
     )
       .then(() => {
         setLoading(false);
-
         // If the transaction was successful, we clear to input to make sure the user doesn't accidental redo the transfer
         setField1Value("");
+        notify();
       })
       .catch((e) => {
         setLoading(false);
+        notifyError();
       });
   };
 
@@ -389,6 +397,22 @@ function CoinSwapper(props) {
           </div>
         </div>
       </div>
+      <Toaster
+        position="bottom-right"
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{}}
+        toastOptions={{
+          // Define default options
+          className: "border border-primary-green",
+          duration: 5000,
+          style: {
+            background: "#15171A",
+            color: "#65B3AD",
+          },
+        }}
+      />
     </div>
   );
 }
