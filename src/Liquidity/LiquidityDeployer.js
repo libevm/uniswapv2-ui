@@ -1,92 +1,64 @@
-import React, { useEffect } from "react";
-import { Grid, makeStyles, Paper, Typography } from "@material-ui/core";
-import AccountBalanceIcon from "@material-ui/icons/AccountBalance";
-import { useSnackbar } from "notistack";
-import {
-  getBalanceAndSymbol,
-  getReserves,
-} from "../ethereumFunctions";
+import { useState, useEffect } from "react";
+import { Transition } from "@headlessui/react";
+import { useWeb3React } from "@web3-react/core";
 
+import { getBalanceAndSymbol, getReserves } from "../ethereumFunctions";
 import { addLiquidity, quoteAddLiquidity } from "./LiquidityFunctions";
 
 import CoinField from "../CoinSwapper/CoinField";
 import CoinDialog from "../CoinSwapper/CoinDialog";
+import Balance from "../Components/Balance";
+import Reserve from "../Components/Reserve";
 import LoadingButton from "../Components/LoadingButton";
-import WrongNetwork from "../Components/wrongNetwork";
+import WrongNetwork from "../Components/WrongNetwork";
+import Loader from "../Components/Loader";
 
-const styles = (theme) => ({
-  paperContainer: {
-    borderRadius: theme.spacing(2),
-    padding: theme.spacing(2),
-    paddingBottom: theme.spacing(3),
-    width: "40%",
-    overflow: "wrap",
-    background: "linear-gradient(45deg, #ff0000 30%, #FF8E53 90%)",
-    color: "white",
-  },
-  fullWidth: {
-    width: "100%",
-  },
-  values: {
-    width: "50%",
-  },
-  title: {
-    textAlign: "center",
-    padding: theme.spacing(0.5),
-    marginBottom: theme.spacing(1),
-  },
-  hr: {
-    width: "100%",
-  },
-  balance: {
-    padding: theme.spacing(1),
-    overflow: "wrap",
-    textAlign: "center",
-  },
-  buttonIcon: {
-    marginRight: theme.spacing(1),
-    padding: theme.spacing(0.4),
-  },
-});
-
-const useStyles = makeStyles(styles);
+import toast, { Toaster } from "react-hot-toast";
 
 function LiquidityDeployer(props) {
-  const classes = useStyles();
-  const { enqueueSnackbar } = useSnackbar();
+  const { account, chainId } = useWeb3React();
+
+  const notify = () => toast("Transaction Pending...");
+  const notifyError = () =>
+    toast("Transaction Failed...", {
+      className: "border border-red-500",
+    });
 
   // Stores a record of whether their respective dialog window is open
-  const [dialog1Open, setDialog1Open] = React.useState(false);
-  const [dialog2Open, setDialog2Open] = React.useState(false);
-  const [wrongNetworkOpen, setwrongNetworkOpen] = React.useState(false);
+  const [dialog1Open, setDialog1Open] = useState(false);
+  const [dialog2Open, setDialog2Open] = useState(false);
+  const [wrongNetworkOpen, setwrongNetworkOpen] = useState(false);
+  const [showTransition, setShowTransition] = useState(false);
 
   // Stores data about their respective coin
-  const [coin1, setCoin1] = React.useState({
+  const [coin1, setCoin1] = useState({
     address: undefined,
     symbol: undefined,
     balance: undefined,
   });
-  const [coin2, setCoin2] = React.useState({
+  const [coin2, setCoin2] = useState({
     address: undefined,
     symbol: undefined,
     balance: undefined,
   });
 
   // Stores the current reserves in the liquidity pool between coin1 and coin2
-  const [reserves, setReserves] = React.useState(["0.0", "0.0"]);
+  const [reserves, setReserves] = useState(["0.0", "0.0"]);
 
   // Stores the current value of their respective text box
-  const [field1Value, setField1Value] = React.useState("");
-  const [field2Value, setField2Value] = React.useState("");
+  const [field1Value, setField1Value] = useState("");
+  const [field2Value, setField2Value] = useState("");
 
   // Controls the loading button
-  const [loading, setLoading] = React.useState(false);
+  const [loading, setLoading] = useState(false);
+  const [showReserveLoader, setShowReserveLoader] = useState(false);
+  const [showLiquidityLoader, setShowLiquidityLoader] = useState(false);
 
   // Stores the user's balance of liquidity tokens for the current pair
-  const [liquidityTokens, setLiquidityTokens] = React.useState("");
+  const [liquidityTokens, setLiquidityTokens] = useState("");
 
   // Used when getting a quote of liquidity
-  const [liquidityOut, setLiquidityOut] = React.useState([0, 0, 0]);
+  const [liquidityOut, setLiquidityOut] = useState([0, 0, 0]);
 
   // Switches the top and bottom coins, this is called when users hit the swap button or select the opposite
   // token in the dialog (e.g. if coin1 is TokenA and the user selects TokenB when choosing coin2)
@@ -115,18 +87,17 @@ function LiquidityDeployer(props) {
   const formatBalance = (balance, symbol) => {
     if (balance && symbol)
       return parseFloat(balance).toPrecision(8) + " " + symbol;
-    else return "0.0";
+    else return "";
   };
 
   // Turns the coin's reserves into something nice and readable
   const formatReserve = (reserve, symbol) => {
     if (reserve && symbol) return reserve + " " + symbol;
-    else return "0.0";
+    else return "";
   };
 
   // Determines whether the button should be enabled or not
   const isButtonEnabled = () => {
-
     // If both coins have been selected, and a valid float has been entered for both, which are less than the user's balances, then return true
     const parsedInput1 = parseFloat(field1Value);
     const parsedInput2 = parseFloat(field2Value);
@@ -142,8 +113,6 @@ function LiquidityDeployer(props) {
     );
   };
 
-
-
   const deploy = () => {
     console.log("Attempting to deploy liquidity...");
     setLoading(true);
@@ -153,8 +122,8 @@ function LiquidityDeployer(props) {
       coin2.address,
       field1Value,
       field2Value,
-      '0',
-      '0',
+      "0",
+      "0",
       props.network.router,
       props.network.account,
       props.network.signer
@@ -165,14 +134,11 @@ function LiquidityDeployer(props) {
         // If the transaction was successful, we clear to input to make sure the user doesn't accidental redo the transfer
         setField1Value("");
         setField2Value("");
-        enqueueSnackbar("Deployment Successful", { variant: "success" });
+        notify();
       })
       .catch((e) => {
         setLoading(false);
-        enqueueSnackbar("Deployment Failed (" + e.message + ")", {
-          variant: "error",
-          autoHideDuration: 10000,
-        });
+        notifyError();
       });
   };
 
@@ -195,7 +161,7 @@ function LiquidityDeployer(props) {
         props.network.signer,
         props.network.weth.address,
         props.network.coins
-        ).then((data) => {
+      ).then((data) => {
         setCoin1({
           address: address,
           symbol: data.symbol,
@@ -217,13 +183,14 @@ function LiquidityDeployer(props) {
     // We only update the values if the user provides a token
     else if (address) {
       // Getting some token data is async, so we need to wait for the data to return, hence the promise
-      getBalanceAndSymbol(props.network.account,
+      getBalanceAndSymbol(
+        props.network.account,
         address,
         props.network.provider,
         props.network.signer,
         props.network.weth.address,
         props.network.coins
-        ).then((data) => {
+      ).then((data) => {
         setCoin2({
           address: address,
           symbol: data.symbol,
@@ -233,36 +200,50 @@ function LiquidityDeployer(props) {
     }
   };
 
+  useEffect(() => {
+    setShowTransition(true);
+  }, []);
+
+  useEffect(() => {
+    if (account && chainId === 5001) {
+      props.setupConnection();
+      setwrongNetworkOpen(false);
+    } else {
+      setwrongNetworkOpen(true);
+    }
+  }, [account, chainId]);
+
   // This hook is called when either of the state variables `coin1.address` or `coin2.address` change.
   // This means that when the user selects a different coin to convert between, or the coins are swapped,
   // the new reserves will be calculated.
   useEffect(() => {
-    console.log(
-      "Trying to get reserves between:\n" + coin1.address + "\n" + coin2.address
-    );
-
     if (coin1.address && coin2.address && props.network.account) {
+      setShowReserveLoader(true);
       getReserves(
         coin1.address,
         coin2.address,
         props.network.factory,
         props.network.signer,
         props.network.account
-        ).then(
-        (data) => {
-          setReserves([data[0], data[1]]);
-          setLiquidityTokens(data[2]);
-        }
-      );
+      ).then((data) => {
+        setReserves([data[0], data[1]]);
+        setLiquidityTokens(data[2]);
+        setShowReserveLoader(false);
+      });
     }
-  }, [coin1.address, coin2.address, props.network.account, props.network.factory, props.network.signer]);
+  }, [
+    coin1.address,
+    coin2.address,
+    props.network.account,
+    props.network.factory,
+    props.network.signer,
+  ]);
 
   // This hook is called when either of the state variables `field1Value`, `field2Value`, `coin1.address` or `coin2.address` change.
   // It will give a preview of the liquidity deployment.
   useEffect(() => {
     if (isButtonEnabled()) {
-      console.log("Trying to preview the liquidity deployment");
-
+      setShowLiquidityLoader(true);
       quoteAddLiquidity(
         coin1.address,
         coin2.address,
@@ -271,14 +252,18 @@ function LiquidityDeployer(props) {
         props.network.factory,
         props.network.signer
       ).then((data) => {
-        // console.log(data);
-        console.log("TokenA in: ", data[0]);
-        console.log("TokenB in: ", data[1]);
-        console.log("Liquidity out: ", data[2]);
         setLiquidityOut([data[0], data[1], data[2]]);
+        setShowLiquidityLoader(false);
       });
     }
-  }, [coin1.address, coin2.address, field1Value, field2Value, props.network.factory, props.network.signer]);
+  }, [
+    coin1.address,
+    coin2.address,
+    field1Value,
+    field2Value,
+    props.network.factory,
+    props.network.signer,
+  ]);
 
   // This hook creates a timeout that will run every ~10 seconds, it's role is to check if the user's balance has
   // updated has changed. This allows them to see when a transaction completes by looking at the balance output.
@@ -287,6 +272,7 @@ function LiquidityDeployer(props) {
       console.log("Checking balances & Getting reserves...");
 
       if (coin1.address && coin2.address && props.network.account) {
+        setShowReserveLoader(true);
         getReserves(
           coin1.address,
           coin2.address,
@@ -296,10 +282,11 @@ function LiquidityDeployer(props) {
         ).then((data) => {
           setReserves([data[0], data[1]]);
           setLiquidityTokens(data[2]);
+          setShowReserveLoader(false);
         });
       }
 
-      if (coin1.address && props.network.account &&!wrongNetworkOpen) {
+      if (coin1.address && props.network.account && !wrongNetworkOpen) {
         getBalanceAndSymbol(
           props.network.account,
           coin1.address,
@@ -307,16 +294,14 @@ function LiquidityDeployer(props) {
           props.network.signer,
           props.network.weth.address,
           props.network.coins
-          ).then(
-          (data) => {
-            setCoin1({
-              ...coin1,
-              balance: data.balance,
-            });
-          }
-        );
+        ).then((data) => {
+          setCoin1({
+            ...coin1,
+            balance: data.balance,
+          });
+        });
       }
-      if (coin2.address && props.network.account &&!wrongNetworkOpen) {
+      if (coin2.address && props.network.account && !wrongNetworkOpen) {
         getBalanceAndSymbol(
           props.network.account,
           coin2.address,
@@ -324,14 +309,12 @@ function LiquidityDeployer(props) {
           props.network.signer,
           props.network.weth.address,
           props.network.coins
-          ).then(
-          (data) => {
-            setCoin2({
-              ...coin2,
-              balance: data.balance,
-            });
-          }
-        );
+        ).then((data) => {
+          setCoin2({
+            ...coin2,
+            balance: data.balance,
+          });
+        });
       }
     }, 10000);
 
@@ -340,162 +323,175 @@ function LiquidityDeployer(props) {
 
   return (
     <div>
-      {/* Liquidity deployer */}
-      <Typography variant="h5" className={classes.title}></Typography>
-
       {/* Dialog Windows */}
       <CoinDialog
         open={dialog1Open}
         onClose={onToken1Selected}
-        coins={props.network.coins}
+        closeModal={() => setDialog1Open(false)}
+        accountAddress={props.network.account}
+        provider={props.network.provider}
         signer={props.network.signer}
+        weth_address={props.network.weth.address}
+        coins={props.network.coins}
       />
       <CoinDialog
         open={dialog2Open}
         onClose={onToken2Selected}
+        closeModal={() => setDialog2Open(false)}
+        accountAddress={props.network.account}
+        provider={props.network.provider}
+        signer={props.network.signer}
+        weth_address={props.network.weth.address}
         coins={props.network.coins}
-        signer={props.networksigner}
       />
-      <WrongNetwork
-        open={wrongNetworkOpen}
+      <div className="flex-1 flex justify-start items-center flex-col w-full">
+        <div className="mt-10 w-full flex justify-center">
+          <div className="relative md:max-w-[700px] md:min-w-[500px] min-w-full max-w-full p-[2px] rounded-3xl">
+            <div className="w-full min-h-[400px] bg-primary-gray backdrop-blur-[4px] rounded-3xl shadow-card flex flex-col p-10">
+              {wrongNetworkOpen ? (
+                <WrongNetwork></WrongNetwork>
+              ) : (
+                <Transition
+                  appear={true}
+                  show={showTransition}
+                  enter="transition ease-out duration-500"
+                  enterFrom="opacity-0 translate-y-2"
+                  enterTo="opacity-100 translate-y-0"
+                  leave="transition ease-in duration-500"
+                  leaveFrom="opacity-100 translate-y-0"
+                  leaveTo="opacity-0 translate-y-1"
+                >
+                  <div>
+                    <div className="mb-4">
+                      <CoinField
+                        activeField={true}
+                        value={field1Value}
+                        onClick={() => setDialog1Open(true)}
+                        onChange={handleChange.field1}
+                        symbol={
+                          coin1.symbol !== undefined ? coin1.symbol : "Select"
+                        }
+                      />
+                      <Balance
+                        balance={coin1.balance}
+                        symbol={coin1.symbol}
+                        format={formatBalance}
+                      />
+                    </div>
+
+                    <div className="mb-2 w-[100%]">
+                      <CoinField
+                        activeField={true}
+                        value={field2Value}
+                        onClick={() => setDialog2Open(true)}
+                        onChange={handleChange.field2}
+                        symbol={
+                          coin2.symbol !== undefined ? coin2.symbol : "Select"
+                        }
+                      />
+                      <Balance
+                        balance={coin2.balance}
+                        symbol={coin2.symbol}
+                        format={formatBalance}
+                      />
+                    </div>
+
+                    <div className="mt-4 mb-6">
+                      <h3 className="text-center text-white font-semibold text-xl mb-2">
+                        Reserves
+                      </h3>
+                      <div className="flex flex-col">
+                        {showReserveLoader ? (
+                          <div className="mx-auto">
+                            <Loader></Loader>
+                          </div>
+                        ) : (
+                          <>
+                            <Reserve
+                              reserve={reserves[0]}
+                              symbol={coin1.symbol}
+                              format={formatReserve}
+                            />
+                            <Reserve
+                              reserve={reserves[1]}
+                              symbol={coin2.symbol}
+                              format={formatReserve}
+                            />
+                          </>
+                        )}
+                      </div>
+                    </div>
+
+                    <div className="relative min-w-full max-w-full p-[2px] rounded-3xl mb-4">
+                      <div className="w-full bg-primary-black backdrop-blur-[4px] rounded-3xl shadow-card flex flex-row justify-around p-4 text-white">
+                        <div className="flex flex-col">
+                          <h6 className="font-bold text-lg text-center mb-2">
+                            Tokens In
+                          </h6>
+                          <div className="mx-auto">
+                            {showLiquidityLoader ? (
+                              <Loader></Loader>
+                            ) : (
+                              <>
+                                <div className="text-sm">
+                                  {formatBalance(liquidityOut[0], coin1.symbol)}
+                                </div>
+                                <div className="text-sm">
+                                  {formatBalance(liquidityOut[1], coin2.symbol)}
+                                </div>
+                              </>
+                            )}
+                          </div>
+                        </div>
+                        <div className="flex flex-col">
+                          <h6 className="font-bold text-lg text-center mb-2">
+                            Tokens Out
+                          </h6>
+                          <div className="mx-auto">
+                            {showLiquidityLoader ? (
+                              <Loader></Loader>
+                            ) : (
+                              <span className="text-sm">
+                                {formatBalance(liquidityOut[2], "UNI-V2")}
+                              </span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <LoadingButton
+                      loading={loading}
+                      valid={isButtonEnabled()}
+                      success={false}
+                      fail={false}
+                      onClick={deploy}
+                    >
+                      Deploy
+                    </LoadingButton>
+                  </div>
+                </Transition>
+              )}
+            </div>
+          </div>
+        </div>
+      </div>
+      <Toaster
+        position="bottom-right"
+        reverseOrder={false}
+        gutter={8}
+        containerClassName=""
+        containerStyle={{}}
+        toastOptions={{
+          // Define default options
+          className: "border border-primary-green",
+          duration: 5000,
+          style: {
+            background: "#15171A",
+            color: "#65B3AD",
+          },
+        }}
       />
-
-      <Grid container direction="column" alignItems="center" spacing={2}>
-        <Grid item xs={12} className={classes.fullWidth}>
-          <CoinField
-            activeField={true}
-            value={field1Value}
-            onClick={() => setDialog1Open(true)}
-            onChange={handleChange.field1}
-            symbol={coin1.symbol !== undefined ? coin1.symbol : "Select"}
-          />
-        </Grid>
-
-        <Grid item xs={12} className={classes.fullWidth}>
-          <CoinField
-            activeField={true}
-            value={field2Value}
-            onClick={() => setDialog2Open(true)}
-            onChange={handleChange.field2}
-            symbol={coin2.symbol !== undefined ? coin2.symbol : "Select"}
-          />
-        </Grid>
-      </Grid>
-
-      <Grid
-        container
-        direction="row"
-        alignItems="center"
-        justifyContent="center"
-        spacing={4}
-        className={classes.balance}
-      >
-        <hr className={classes.hr} />
-        <Grid
-          container
-          item
-          className={classes.values}
-          direction="column"
-          alignItems="center"
-          spacing={2}
-        >
-          {/* Balance Display */}
-          <Typography variant="h6">Your Balances</Typography>
-          <Grid container direction="row" justifyContent="space-between">
-            <Grid item xs={6}>
-              <Typography variant="body1" className={classes.balance}>
-                {formatBalance(coin1.balance, coin1.symbol)}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" className={classes.balance}>
-                {formatBalance(coin2.balance, coin2.symbol)}
-              </Typography>
-            </Grid>
-          </Grid>
-
-          <hr className={classes.hr} />
-
-          {/* Reserves Display */}
-          <Typography variant="h6">Reserves</Typography>
-          <Grid container direction="row" justifyContent="space-between">
-            <Grid item xs={6}>
-              <Typography variant="body1" className={classes.balance}>
-                {formatReserve(reserves[0], coin1.symbol)}
-              </Typography>
-            </Grid>
-            <Grid item xs={6}>
-              <Typography variant="body1" className={classes.balance}>
-                {formatReserve(reserves[1], coin2.symbol)}
-              </Typography>
-            </Grid>
-          </Grid>
-
-          <hr className={classes.hr} />
-
-          {/* Liquidity Tokens Display */}
-          <Typography variant="h6">Your Liquidity Pool Tokens</Typography>
-          <Grid container direction="row" justifyContent="center">
-            <Grid item xs={6}>
-              <Typography variant="body1" className={classes.balance}>
-                {formatReserve(liquidityTokens, "UNI-V2")}
-              </Typography>
-            </Grid>
-          </Grid>
-        </Grid>
-        <Paper className={classes.paperContainer}>
-          {/*Red  Display to show the quote */}
-          <Grid
-            container
-            item
-            direction="column"
-            alignItems="center"
-            spacing={2}
-            className={classes.fullWidth}
-          >
-            {/* Tokens in */}
-            <Typography variant="h6">Tokens in</Typography>
-            <Grid container direction="row" justifyContent="space-between">
-              <Grid item xs={6}>
-                <Typography variant="body1" className={classes.balance}>
-                  {formatBalance(liquidityOut[0], coin1.symbol)}
-                </Typography>
-              </Grid>
-              <Grid item xs={6}>
-                <Typography variant="body1" className={classes.balance}>
-                  {formatBalance(liquidityOut[1], coin2.symbol)}
-                </Typography>
-              </Grid>
-            </Grid>
-
-            <hr className={classes.hr} />
-
-            {/* Liquidity Tokens Display */}
-            <Typography variant="h6">Liquidity Pool Tokens Out</Typography>
-            <Grid container direction="row" justifyContent="center">
-              <Grid item xs={6}>
-                <Typography variant="body1" className={classes.balance}>
-                  {formatReserve(liquidityOut[2], "UNI-V2")}
-                </Typography>
-              </Grid>
-            </Grid>
-          </Grid>
-        </Paper>
-
-        <hr className={classes.hr} />
-      </Grid>
-      <Grid container direction="column" alignItems="center" spacing={2}>
-        <LoadingButton
-          loading={loading}
-          valid={isButtonEnabled()}
-          success={false}
-          fail={false}
-          onClick={deploy}
-        >
-          <AccountBalanceIcon className={classes.buttonIcon} />
-          Deploy
-        </LoadingButton>
-      </Grid>
     </div>
   );
 }

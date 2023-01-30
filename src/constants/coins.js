@@ -1,7 +1,9 @@
-import * as chains from './chains';
+import * as chains from "./chains";
+import { bit, weth, wbtc, usdc, usdt, uniswap, chainlink } from "../assets";
 
 // If you add coins for a new network, make sure Weth address (for the router you are using) is the first entry
 
+/*
 const AUTONITYCoins = [
   {
     name: "Auton",
@@ -240,21 +242,60 @@ const GÖRLICoins = [
     address: "0x509ee0d083ddf8ac028f2a56731412edd63223b9",
   },
 ]
+*/
 
 const MantleTestnetCoins = [
   {
-    name: 'BIT',
-    abbr: 'BIT',
-    address: ''
+    name: "BIT Token",
+    abbr: "BIT",
+    address: "",
+    logo: bit,
   },
   {
-    name: 'Clown',
-    abbr: 'CLOWN',
-    address: '0x0d7f7eb2efD4c97CA8883D197889B17615796871'
-  }
-]
+    name: "Wrapped Ether",
+    abbr: "WETH",
+    address: "0xdEAddEaDdeadDEadDEADDEAddEADDEAddead1111",
+    logo: weth,
+  },
+  {
+    name: "Wrapped Bitcoin",
+    abbr: "WBTC",
+    address: "0x9155d6bFD923398D77292a2781D3E4acfD3cFFd6",
+    logo: wbtc,
+  },
+  {
+    name: "USD Coin",
+    abbr: "USDC",
+    address: "0x2ED3c15eC59CE827c4aBBabfF76d37562558437D",
+    logo: usdc,
+  },
+  {
+    name: "Tether USD",
+    abbr: "USDT",
+    address: "0x27ee0eB6EbbcbCd4706C3291604AdC2F4384d09F",
+    logo: usdt,
+  },
+  {
+    name: "Uniswap",
+    abbr: "UNI",
+    address: "0x7AD75528ad538B8E28b624033DD3C10F2Ad96a37",
+    logo: uniswap,
+  },
+  {
+    name: "Chainlink",
+    abbr: "LINK",
+    address: "0xA440ca6123C6d472F85c1f3930395664BCcd3d01",
+    logo: chainlink,
+  },
+  {
+    name: "Clown",
+    abbr: "CLOWN",
+    address: "0x0d7f7eb2efD4c97CA8883D197889B17615796871",
+  },
+];
 
 const COINS = new Map();
+/*
 COINS.set(chains.ChainId.MAINNET, MAINNETCoins);
 COINS.set(chains.ChainId.ROPSTEN, ROPSTENCoins);
 COINS.set(chains.ChainId.RINKEBY, RINKEBYCoins);
@@ -264,5 +305,6 @@ COINS.set(chains.ChainId.AUTONITY, AUTONITYCoins);
 COINS.set(chains.ChainId.DEVNET, DEVNETCoins);
 COINS.set(chains.ChainId.PARASTATE, PARASTATECoins);
 COINS.set(chains.ChainId.GANCHE, GANACHECoins)
-COINS.set(chains.ChainId.MANTLE_TESTNET, MantleTestnetCoins)
-export default COINS
+*/
+COINS.set(chains.ChainId.MANTLE_TESTNET, MantleTestnetCoins);
+export default COINS;

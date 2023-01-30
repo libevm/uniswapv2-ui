@@ -1,49 +1,5 @@
-import React from "react";
-import { Fab, Grid, InputBase, makeStyles } from "@material-ui/core";
-import ExpandMoreIcon from "@material-ui/icons/ExpandMore";
 import PropTypes from "prop-types";
-import * as COLORS from "@material-ui/core/colors";
-
-const useStyles = makeStyles((theme) => ({
-  container: {
-    padding: theme.spacing(1),
-    minHeight: "80px",
-    backgroundColor: COLORS.grey[50],
-    borderRadius: theme.spacing(2),
-    borderColor: COLORS.grey[300],
-    borderWidth: "1px",
-    borderStyle: "solid",
-  },
-  container_input: {
-    padding: theme.spacing(1),
-    minHeight: "68px",
-    backgroundColor: COLORS.grey[50],
-    borderRadius: theme.spacing(2),
-    borderColor: COLORS.grey[300],
-    borderWidth: "1px",
-    borderStyle: "solid",
-    marginLeft: "50%",
-    textAlign: "right",
-  },
-  container_blank: {
-    padding: theme.spacing(1),
-    minHeight: "80px",
-    borderRadius: theme.spacing(2),
-  },
-  grid: {
-    height: "60px",
-  },
-  fab: {
-    zIndex: "0",
-  },
-  input: {
-    ...theme.typography.h5,
-    width: "100%",
-  },
-  inputBase: {
-    textAlign: "right",
-  },
-}));
+import { ChevronDownIcon } from "@heroicons/react/20/solid";
 
 CoinField.propTypes = {
   onClick: PropTypes.func.isRequired,
@@ -61,44 +17,24 @@ export function RemoveLiquidityField1(props) {
   //      onChange - (e) => void - Called when the text field changes
   //      activeField - boolean - Whether text can be entered into this field or not
 
-  const classes = useStyles();
-  const { onClick, symbol, value, onChange, activeField } = props;
+  const { onClick1, onClick2, symbol1, symbol2 } = props;
+
   return (
-    <div className={classes.container_blank}>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        className={classes.grid}
+    <div className="flex justify-around items-center flex-row w-full min-w-full h-20 sm:p-8 p-4 rounded-2xl">
+      <button
+        onClick={onClick1}
+        className="flex flex-row justify-around items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-medium text-white"
       >
-        {/* Button */}
-        <Grid item xs={3}>
-          <Fab
-            size="small"
-            variant="extended"
-            onClick={onClick}
-            className={classes.fab}
-          >
-            {symbol}
-            <ExpandMoreIcon />
-          </Fab>
-        </Grid>
-        {/* Text Field */}
-        <Grid item xs={9}>
-          <InputBase
-            value={value}
-            onChange={onChange}
-            placeholder="0.0"
-            disabled={!activeField}
-            classes={{
-              root: classes.container_input,
-              input: classes.inputBase,
-            }}
-          />
-        </Grid>
-        {/* </div> */}
-      </Grid>
+        <span>{symbol1}</span>
+        <ChevronDownIcon className="ml-2 h-5 w-5 text-white transition duration-150 ease-in-out group-hover:text-opacity-80"></ChevronDownIcon>
+      </button>
+      <button
+        onClick={onClick2}
+        className="flex flex-row justify-around items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-medium text-white"
+      >
+        <span>{symbol2}</span>
+        <ChevronDownIcon className="ml-2 h-5 w-5 text-white transition duration-150 ease-in-out group-hover:text-opacity-80"></ChevronDownIcon>
+      </button>
     </div>
   );
 }
@@ -111,31 +47,17 @@ export function RemoveLiquidityField2(props) {
   //      onChange - (e) => void - Called when the text field changes
   //      activeField - boolean - Whether text can be entered into this field or not
 
-  const classes = useStyles();
-  const { onClick, symbol } = props;
-
+  const { value, onChange, activeField } = props;
   return (
-    <div className={classes.container_blank}>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        className={classes.grid}
-      >
-        {/* Button */}
-        <Grid item xs={3}>
-          <Fab
-            size="small"
-            variant="extended"
-            onClick={onClick}
-            className={classes.fab}
-          >
-            {symbol}
-            <ExpandMoreIcon />
-          </Fab>
-        </Grid>
-      </Grid>
+    <div className="flex justify-between items-center flex-row w-full min-w-full h-20 bg-primary-black sm:p-8 p-4 rounded-2xl">
+      <input
+        placeholder="0.0"
+        type="number"
+        value={value}
+        disabled={!activeField}
+        onChange={onChange}
+        className="w-full flex-1 bg-transparent outline-none font-poppins font-medium text-md text-white"
+      />
     </div>
   );
 }
@@ -148,42 +70,24 @@ export default function CoinField(props) {
   //      onChange - (e) => void - Called when the text field changes
   //      activeField - boolean - Whether text can be entered into this field or not
 
-  const classes = useStyles();
   const { onClick, symbol, value, onChange, activeField } = props;
 
   return (
-    <div className={classes.container}>
-      <Grid
-        container
-        direction="row"
-        justifyContent="space-between"
-        alignItems="center"
-        className={classes.grid}
-      >
-        {/* Button */}
-        <Grid item xs={3}>
-          <Fab
-            size="small"
-            variant="extended"
-            onClick={onClick}
-            className={classes.fab}
-          >
-            {symbol}
-            <ExpandMoreIcon />
-          </Fab>
-        </Grid>
-
-        {/* Text Field */}
-        <Grid item xs={9}>
-          <InputBase
-            value={value}
-            onChange={onChange}
-            placeholder="0.0"
-            disabled={!activeField}
-            classes={{ root: classes.input, input: classes.inputBase }}
-          />
-        </Grid>
-      </Grid>
+    <div className="flex justify-between items-center flex-row w-full min-w-full h-20 bg-primary-black sm:p-8 p-4 rounded-2xl">
+      <input
+        placeholder="0.0"
+        type="number"
+        value={value}
+        disabled={!activeField}
+        onChange={onChange}
+        className="w-full flex-1 bg-transparent outline-none font-poppins font-medium text-md text-white"
+      />
+      <div className="relative" onClick={onClick}>
+        <button className="flex flex-row justify-around items-center bg-secondary-gray py-2 px-4 rounded-xl font-poppins font-medium text-white">
+          <span>{symbol}</span>
+          <ChevronDownIcon className="ml-2 h-5 w-5 text-white transition duration-150 ease-in-out group-hover:text-opacity-80"></ChevronDownIcon>
+        </button>
+      </div>
     </div>
   );
 }

@@ -1,49 +1,38 @@
 import React from "react";
-import "./App.css";
-import { ethers } from "ethers";
-import Web3Provider from "./network";
+import Web3ProviderCore from "./network";
 import NarBar from "./NavBar/NavBar";
 import CoinSwapper from "./CoinSwapper/CoinSwapper";
 import { Route } from "react-router-dom";
-import { SnackbarProvider } from "notistack";
 import Liquidity from "./Liquidity/Liquidity";
-import { createTheme, ThemeProvider } from "@material-ui/core";
+import { Web3ReactProvider } from "@web3-react/core";
+import { Web3Provider } from "@ethersproject/providers";
 
-const theme = createTheme({
-  palette: {
-    primary: {
-      main: "#ff0000",
-      contrastText: "#ffffff",
-    },
-    secondary: {
-      main: "#9e9e9e",
-      contrastText: "#ffffff",
-    },
-  },
-});
+const getLibrary = (provider) => {
+  const library = new Web3Provider(provider);
+  return library;
+};
 
 const App = () => {
   return (
-    <div className="App">
-      <SnackbarProvider maxSnack={3}>
-        <ThemeProvider theme={theme}>
-          <Web3Provider
-            render={(network) => (
-              <div>
-                <NarBar />
-                <Route exact path="/">
-                  <CoinSwapper network={network} />
-                </Route>
+    <Web3ReactProvider getLibrary={getLibrary}>
+      <Web3ProviderCore
+        render={(network, setupConnection) => (
+          <div>
+            <NarBar />
 
-                <Route exact path="/liquidity">
-                  <Liquidity network={network} />
-                </Route>
-              </div>
-            )}
-          ></Web3Provider>
-        </ThemeProvider>
-      </SnackbarProvider>
-    </div>
+            <Route exact path="/">
+              <CoinSwapper
+                network={network}
+                setupConnection={setupConnection}
+              />
+            </Route>
+            <Route exact path="/liquidity">
+              <Liquidity network={network} setupConnection={setupConnection} />
+            </Route>
+          </div>
+        )}
+      ></Web3ProviderCore>
+    </Web3ReactProvider>
   );
 };
 
